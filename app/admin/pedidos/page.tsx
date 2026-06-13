@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { obtenerTodasOrdenes, actualizarOrden, deducirStockOrden, devolverStockOrden } from "../../lib/ordenes-db";
+import { useUser } from "../../context/UserContext";
+import { auth } from "../../lib/firebase";
+import { getIdToken } from "firebase/auth";
 
 function getTodayYMD() {
 	const now = new Date();
@@ -9,32 +12,79 @@ function getTodayYMD() {
 }
 
 export default function PedidosAdminPage() {
+	const { user } = useUser();
 	const [ordenes, setOrdenes] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [tab, setTab] = useState<"pendientes" | "aprobadas">("pendientes");
 	const [filtro, setFiltro] = useState("");
 	const [clientesMap, setClientesMap] = useState<Record<string, { displayName: string | null; email: string | null }>>({});
-	const [fechaDesde, setFechaDesde] = useState<string>(getTodayYMD());
-	const [fechaHasta, setFechaHasta] = useState<string>(getTodayYMD());
+	const [fechaDesde, setFechaDesde] = useState<string>("");
+	const [fechaHasta, setFechaHasta] = useState<string>("");
 	const [expandedTarjetas, setExpandedTarjetas] = useState(false);
 
-	useEffect(() => {
-		async function load() {
-			setLoading(true);
-			const [data, clientesRes] = await Promise.all([
-				obtenerTodasOrdenes(),
-				fetch("/api/admin/clientes").then((r) => r.ok ? r.json() : { clientes: [] }),
-			]);
-			setOrdenes(data);
+	const loadOrdenes = async () => {
+		setLoading(true);
+		try {
+			// Obtener token del usuario logueado actualmente
+			const currentUser = auth.currentUser;
+			console.log("🔍 loadOrdenes - currentUser:", currentUser?.uid);
+			
+			if (!currentUser) {
+				console.error("❌ No hay usuario logueado");
+				setOrdenes([]);
+				setLoading(false);
+				return;
+			}
+
+			const token = await getIdToken(currentUser);
+			console.log("🔍 Token obtenido:", token.slice(0, 20) + "...");
+
+			// Usar endpoint API para obtener órdenes
+			console.log("🔍 Llamando a /api/admin/ordenes");
+			const res = await fetch("/api/admin/ordenes", {
+				headers: {
+					"Authorization": `Bearer ${token}`,
+				},
+			});
+
+			console.log("🔍 Response status:", res.status);
+			
+			if (!res.ok) {
+				const errorText = await res.text();
+				console.error("❌ Error al obtener órdenes:", res.status, errorText);
+				throw new Error(`Error ${res.status}: ${errorText}`);
+			}
+
+			const data = await res.json();
+			console.log("✅ Órdenes recibidas:", data.length, data);
+			setOrdenes(Array.isArray(data) ? data : []);
+		} catch (error) {
+			console.error("❌ Error cargando órdenes:", error);
+			setOrdenes([]);
+		}
+
+		try {
+			const clientesRes = await fetch("/api/admin/clientes");
+			if (!clientesRes.ok) throw new Error("Error al obtener clientes");
+			
+			const clientesData = await clientesRes.json();
 			const map: Record<string, { displayName: string | null; email: string | null }> = {};
-			for (const c of (clientesRes.clientes || [])) {
+			for (const c of (clientesData.clientes || [])) {
 				map[c.uid] = { displayName: c.displayName, email: c.email };
 			}
 			setClientesMap(map);
-			setLoading(false);
+		} catch (error) {
+			console.error("Error cargando clientes:", error);
 		}
-		load();
-	}, []);
+
+		setLoading(false);
+	};
+
+	useEffect(() => {
+		if (user) {
+			loadOrdenes();
+		}
+	}, [user]);
 
 	const calcularSubtotalProducto = (p: any) => {
 		const cantidad = Number(p.cantidad || 0);
@@ -140,7 +190,13 @@ export default function PedidosAdminPage() {
 
 	// Filtro por rango de fechas de visita
 	const estaEnRango = (visitaFecha: string | undefined) => {
-		if (!visitaFecha) return false;
+		// Si no hay filtro de fechas, mostrar todas las órdenes (incluso sin visitaFecha)
+		if (!fechaDesde && !fechaHasta) return true;
+		
+		// Si hay filtro pero la orden no tiene visitaFecha, no se puede filtrar → mostrar
+		if (!visitaFecha) return true;
+		
+		// Si hay filtro, aplicarlo
 		if (fechaDesde && visitaFecha < fechaDesde) return false;
 		if (fechaHasta && visitaFecha > fechaHasta) return false;
 		return true;
@@ -347,7 +403,17 @@ export default function PedidosAdminPage() {
 
 	return (
 		<div className="max-w-3xl mx-auto px-4 py-8">
-			<h1 className="text-3xl font-bold mb-6 text-slate-800 dark:text-slate-100">Pedidos</h1>
+			<div className="flex items-center justify-between mb-6">
+				<h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Pedidos</h1>
+				<button
+					onClick={loadOrdenes}
+					disabled={loading}
+					className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white font-medium transition-colors"
+				>
+					<span className="material-icons-round text-sm">refresh</span>
+					{loading ? "Cargando..." : "Refrescar"}
+				</button>
+			</div>
 
 			{/* Filtros */}
 			<div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 mb-6 space-y-4">

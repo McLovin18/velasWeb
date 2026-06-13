@@ -360,7 +360,7 @@ export async function POST(req: NextRequest) {
         email,
         productos: productosConPrecio,
         total,
-        estado: "pendiente",
+        estado: "generada",
         metodo_pago: "simulacion",
         createdAt: ahora,
         updatedAt: ahora,
