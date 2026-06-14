@@ -16,7 +16,7 @@ import { Source_Serif_4 } from "next/font/google";
 export const revalidate = 1800;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://velaspersonalizadas.com";
-const SITE_NAME = "Lumina Velas";
+const SITE_NAME = "Mikartesana Velas";
 const sourceSerif4 = Source_Serif_4({
   subsets: ["latin"],
   weight: ["400"],
@@ -26,7 +26,7 @@ const sourceSerif4 = Source_Serif_4({
 
 export const metadata: Metadata = {
   title: {
-    default: "Lumina Velas - Velas Personalizadas y Artesanales",
+    default: "Mikartesana Velas - Velas Personalizadas y Artesanales",
     template: "%s | Lumina Velas",
   },
   description:
@@ -38,9 +38,9 @@ export const metadata: Metadata = {
     "velas decorativas",
     "velas aromáticas",
     "regalos personalizados",
-    "Lumina Velas",
+    "Mikartesana Velas",
   ],
-  creator: "Lumina Velas",
+  creator: "Mikartesana Velas",
   metadataBase: new URL(SITE_URL),
   icons: {
     icon: "/favicon.ico",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     locale: "es_ES",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: "Lumina Velas - Velas Personalizadas y Artesanales",
+    title: "Mikartesana Velas - Velas Personalizadas y Artesanales",
     description:
       "Compra velas personalizadas y artesanales. Creamos velas únicas para momentos especiales con envíos a todo Ecuador.",
     images: [
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/og-image.jpg`,
         width: 1200,
         height: 630,
-        alt: "Lumina Velas - Velas Personalizadas Artesanales",
+        alt: "Mikartesana Velas - Velas Personalizadas Artesanales",
         type: "image/jpeg",
       },
     ],
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
   // Twitter Card
   twitter: {
     card: "summary_large_image",
-    title: "Lumina Velas - Velas Personalizadas y Artesanales",
+    title: "Mikartesana Velas - Velas Personalizadas y Artesanales",
     description:
       "Compra velas personalizadas y artesanales. Envíos a todo Ecuador.",
     images: [`${SITE_URL}/twitter-image.jpg`],
