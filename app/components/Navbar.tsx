@@ -307,7 +307,7 @@ export const Navbar = () => {
             >
 
               <span className="font-heading tracking-tight whitespace-nowrap text-xl sm:text-2xl">
-                Lumina Velas
+                Mikartesana Velas
               </span>
             </a>
           </div>
