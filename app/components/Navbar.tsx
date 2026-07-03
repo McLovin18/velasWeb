@@ -15,6 +15,20 @@ import { useUser } from "../context/UserContext";
 import { productMatches } from "../lib/search-utils";
 
 // ─────────────────────────────────────────────
+// Paleta de marca — Epyka Dreams (oscuro elegante)
+// ─────────────────────────────────────────────
+const BRAND = {
+  bg: "#0d0d0d",          // negro base del navbar
+  bgSoft: "#161616",      // negro secundario (drawer, dropdowns dark)
+  gold: "#C9A227",        // dorado principal (acentos, iconos activos)
+  goldBright: "#E4C158",  // dorado hover/brillante
+  border: "rgba(201, 162, 39, 0.25)", // borde dorado translúcido
+  borderSoft: "rgba(201, 162, 39, 0.15)",
+  white: "#ffffff",
+  textMuted: "rgba(255,255,255,0.7)",
+};
+
+// ─────────────────────────────────────────────
 // Acordeón de categorías para el drawer móvil
 // ─────────────────────────────────────────────
 function MobileCategoriesAccordion({ basePath }: { basePath: string }) {
@@ -32,14 +46,14 @@ function MobileCategoriesAccordion({ basePath }: { basePath: string }) {
   return (
     <div className="flex flex-col gap-1 my-3">
       <p className="text-xs font-semibold uppercase tracking-wider px-2 mb-1"
-        style={{ color: "rgba(255,255,255,0.7)" }}>
+        style={{ color: BRAND.textMuted }}>
         Categorías
       </p>
       {categorias.map((cat) => (
         <div key={cat.id}>
           <button
             className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-colors"
-            style={{ color: "#ffffff" }}
+            style={{ color: BRAND.white }}
             onClick={() =>
               setOpenCat(openCat === cat.id ? null : cat.id)
             }
@@ -47,7 +61,7 @@ function MobileCategoriesAccordion({ basePath }: { basePath: string }) {
             <span className="flex items-center gap-2">
               {cat.icono && (
                 <span className="material-icons-round text-base"
-                  style={{ color: "#E0A11A" }}>
+                  style={{ color: BRAND.gold }}>
                   {cat.icono}
                 </span>
               )}
@@ -57,7 +71,7 @@ function MobileCategoriesAccordion({ basePath }: { basePath: string }) {
               <span
                 className="material-icons-round text-sm transition-transform duration-200"
                 style={{
-                  color: "#ffffff",
+                  color: BRAND.white,
                   transform: openCat === cat.id ? "rotate(180deg)" : "rotate(0deg)",
                 }}
               >
@@ -68,14 +82,14 @@ function MobileCategoriesAccordion({ basePath }: { basePath: string }) {
 
           {cat.subcategorias?.length > 0 && openCat === cat.id && (
             <div className="ml-4 mb-1 rounded-xl overflow-hidden border"
-              style={{ borderColor: "rgba(255,255,255,0.2)" }}>
+              style={{ borderColor: BRAND.border }}>
               {cat.subcategorias.map((sub: any) => (
                 <div key={sub.id}>
                   {sub.subcategorias?.length > 0 ? (
                     <>
                       <button
                         className="w-full flex items-center justify-between px-3 py-2 text-sm transition-shadow hover:shadow-sm rounded-md"
-                        style={{ color: "#ffffff" }}
+                        style={{ color: BRAND.white }}
                         onClick={() =>
                           setOpenSub(openSub === sub.id ? null : sub.id)
                         }
@@ -84,7 +98,7 @@ function MobileCategoriesAccordion({ basePath }: { basePath: string }) {
                         <span
                           className="material-icons-round text-sm transition-transform duration-200"
                           style={{
-                            color: "#ffffff",
+                            color: BRAND.white,
                             transform:
                               openSub === sub.id
                                 ? "rotate(180deg)"
@@ -96,13 +110,13 @@ function MobileCategoriesAccordion({ basePath }: { basePath: string }) {
                       </button>
                       {openSub === sub.id && (
                         <div className="ml-3 border-l"
-                          style={{ borderColor: "rgba(255,255,255,0.2)" }}>
+                          style={{ borderColor: BRAND.border }}>
                           {sub.subcategorias.map((subsub: any) => (
                             <a
                               key={subsub.id}
                               href={`${basePath}?cat=${cat.id}&sub=${sub.id}&subsub=${subsub.id}`}
                               className="block px-4 py-2 text-xs transition-colors"
-                              style={{ color: "rgba(255,255,255,0.7)" }}
+                              style={{ color: BRAND.textMuted }}
                             >
                               {subsub.nombre}
                             </a>
@@ -114,7 +128,7 @@ function MobileCategoriesAccordion({ basePath }: { basePath: string }) {
                     <a
                       href={`${basePath}?cat=${cat.id}&sub=${sub.id}`}
                       className="block px-3 py-2 text-sm transition-shadow hover:shadow-sm rounded-md"
-                      style={{ color: "#ffffff" }}
+                      style={{ color: BRAND.white }}
                     >
                       {sub.nombre}
                     </a>
@@ -128,7 +142,7 @@ function MobileCategoriesAccordion({ basePath }: { basePath: string }) {
             <a
               href={`${basePath}?cat=${cat.id}`}
               className="block px-3 py-2 text-sm"
-              style={{ color: "#ffffff" }}
+              style={{ color: BRAND.white }}
             >
               {cat.nombre}
             </a>
@@ -147,11 +161,10 @@ export const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [openCatId, setOpenCatId] = useState<string | null>(null); // Para dropdown nivel 1 en tablet/desktop
-  const [openSubId, setOpenSubId] = useState<string | null>(null); // Para dropdown nivel 2 en tablet/desktop
+  const [openCatId, setOpenCatId] = useState<string | null>(null);
+  const [openSubId, setOpenSubId] = useState<string | null>(null);
   const { user, carrito } = useUser();
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
-  
 
   // Barra de búsqueda
   const [searchValue, setSearchValue] = useState("");
@@ -170,7 +183,6 @@ export const Navbar = () => {
     obtenerProductos().then((prods) => setAllProducts(prods));
   }, []);
 
-  // Escuchar categorías desde Firestore
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "categorias"), (snap) => {
       setCategorias(sortCategoriasByOrder(mapCategorySnapshot(snap.docs)));
@@ -188,7 +200,6 @@ export const Navbar = () => {
     }
   }, [searchOpen]);
 
-  // Close search when clicking outside the search container
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -212,7 +223,6 @@ export const Navbar = () => {
     }
   }, []);
 
-  // Escuchar evento para activar el buscador desde home
   useEffect(() => {
     const handleActivateSearch = () => {
       setSearchOpen(true);
@@ -224,7 +234,6 @@ export const Navbar = () => {
     return () => window.removeEventListener("activateNavbarSearch", handleActivateSearch);
   }, [windowWidth]);
 
-  // Sugerencias de búsqueda
   useEffect(() => {
     if (!searchValue.trim()) { setSuggestions([]); return; }
     setSearchLoading(true);
@@ -242,15 +251,14 @@ export const Navbar = () => {
 
   const links = [
     { href: "/", label: "Inicio" },
-    { href: "/nueva-coleccion", label: "Nueva Colección" },
     { href: "/productos", label: "Catálogo" },
     { href: "/personalizados", label: "Personalizados" },
-    { href: "/blogs", label: "Blog" },
+
   ];
 
   const infoSliderItems = [
-    { text: "¡Haz clic y obtén 15% de descuento en velas personalizadas! →", href: "/personalizados" },
-    "�️ Envíos a todo el Ecuador incluyendo las Islas Galápagos",
+    { text: "✨ Personaliza tu termo con grabado láser desde $X →", href: "/grabado-laser" },
+    "🚚 Envíos a todo el Ecuador — Guayaquil, La Alborada",
   ];
 
   const handleSearch = () => {
@@ -270,12 +278,12 @@ export const Navbar = () => {
       {/* ══════════════════ NAVBAR ══════════════════ */}
       <nav
         className="sticky top-0 z-40 border-b py-3 shadow-sm backdrop-blur-md"
-        style={{ background: "#2d1810", borderColor: "rgba(252, 211, 77, 0.2)" }}
+        style={{ background: BRAND.bg, borderColor: BRAND.border }}
       >
         {/* ── Header principal ── */}
         <div
           className="relative flex items-center justify-between gap-4 px-4 py-2 lg:px-6 lg:py-2"
-          style={{ color: "#ffffff" }}
+          style={{ color: BRAND.white }}
         >
           <div className="flex items-center gap-3 shrink-0">
             <button
@@ -305,9 +313,11 @@ export const Navbar = () => {
               href={user ? "/admin" : "/"}
               className="flex items-center gap-2 shrink-0 text-white pointer-events-auto"
             >
-
-              <span className="font-heading tracking-tight whitespace-nowrap text-xl sm:text-2xl">
-                Mikartesana Velas
+              <span
+                className="font-heading whitespace-nowrap text-xl sm:text-2xl"
+                style={{ letterSpacing: "0.12em", color: BRAND.white }}
+              >
+                EPYKA <span style={{ color: BRAND.gold }}>DREAMS</span>
               </span>
             </a>
           </div>
@@ -418,7 +428,10 @@ export const Navbar = () => {
               >
                 <span className="material-icons-round text-xl">shopping_cart</span>
                 {carrito && carrito.length > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-amber-500 text-black text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-[#111827] z-10">
+                  <span
+                    className="absolute -top-2 -right-2 text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 z-10"
+                    style={{ background: BRAND.gold, color: "#0d0d0d", borderColor: BRAND.bg }}
+                  >
                     {carrito.length}
                   </span>
                 )}
@@ -437,7 +450,8 @@ export const Navbar = () => {
                     <img
                       src={user.photoURL}
                       alt="Foto de perfil"
-                      className="w-9 h-9 rounded-full object-cover border-2 border-white"
+                      className="w-9 h-9 rounded-full object-cover border-2"
+                      style={{ borderColor: BRAND.gold }}
                     />
                   ) : (
                     <span className="material-icons-round text-3xl text-white">
@@ -481,19 +495,15 @@ export const Navbar = () => {
                   </div>
                 )}
               </div>
-
             ) : null}
-
-            
           </div>
         </div>
 
-        <div className="hidden items-center justify-center gap-1 px-6 border-t flex-wrap" style={{ borderColor: "rgba(252, 211, 77, 0.2)" }}>
-          {/* Categorías dinámicas */}
+        <div className="hidden items-center justify-center gap-1 px-6 border-t flex-wrap" style={{ borderColor: BRAND.border }}>
           {/* Categorías dinámicas */}
           {categorias.map((cat) => (
-            <div 
-              key={cat.id} 
+            <div
+              key={cat.id}
               className="relative group shrink-0"
               onMouseEnter={() => windowWidth !== null && windowWidth >= 1024 && setOpenCatId(cat.id)}
               onMouseLeave={() => windowWidth !== null && windowWidth >= 1024 && setOpenCatId(null)}
@@ -501,14 +511,14 @@ export const Navbar = () => {
               {cat.subcategorias?.length > 0 ? (
                 <button
                   onClick={() => setOpenCatId(openCatId === cat.id ? null : cat.id)}
-                  className="flex items-center gap-1 px-3 py-2.5 text-sm font-medium whitespace-nowrap transition-shadow rounded-xl hover:shadow-sm text-black dark:text-white"
+                  className="flex items-center gap-1 px-3 py-2.5 text-sm font-medium whitespace-nowrap transition-shadow rounded-xl hover:shadow-sm text-white"
                 >
                   {cat.icono && (
-                    <span className="material-icons-round dark:text-white" style={{ fontSize: 15 }}>{cat.icono}</span>
+                    <span className="material-icons-round" style={{ fontSize: 15, color: BRAND.gold }}>{cat.icono}</span>
                   )}
-                  <span className="dark:text-white">{cat.nombre}</span>
+                  <span className="text-white">{cat.nombre}</span>
                   <span
-                    className="material-icons-round dark:text-white transition-transform duration-200"
+                    className="material-icons-round text-white transition-transform duration-200"
                     style={{ fontSize: 14, transform: openCatId === cat.id ? "rotate(180deg)" : "rotate(0deg)" }}
                   >
                     arrow_drop_down
@@ -517,21 +527,22 @@ export const Navbar = () => {
               ) : (
                 <Link
                   href={`${basePath}?cat=${cat.id}`}
-                  className="flex items-center gap-1 px-3 py-2.5 text-sm font-medium whitespace-nowrap transition-shadow rounded-xl hover:shadow-sm text-black dark:text-white"
+                  className="flex items-center gap-1 px-3 py-2.5 text-sm font-medium whitespace-nowrap transition-shadow rounded-xl hover:shadow-sm text-white"
                 >
                   {cat.icono && (
-                    <span className="material-icons-round dark:text-white" style={{ fontSize: 15 }}>{cat.icono}</span>
+                    <span className="material-icons-round" style={{ fontSize: 15, color: BRAND.gold }}>{cat.icono}</span>
                   )}
-                  <span className="dark:text-white">{cat.nombre}</span>
+                  <span className="text-white">{cat.nombre}</span>
                 </Link>
               )}
 
               {/* Dropdown nivel 1 */}
               {cat.subcategorias?.length > 0 && (
                 <div
-                  className="absolute left-0 top-full min-w-52 rounded-2xl border hover:text-black shadow-xl py-1.5 z-50 bg-white dark:bg-[#181028]"
+                  className="absolute left-0 top-full min-w-52 rounded-2xl border hover:text-black shadow-xl py-1.5 z-50"
                   style={{
-                    borderColor: "var(--border)",
+                    background: BRAND.bgSoft,
+                    borderColor: BRAND.border,
                     opacity: openCatId === cat.id ? "1" : "0",
                     pointerEvents: openCatId === cat.id ? "auto" : "none",
                     transform: openCatId === cat.id ? "translateY(0)" : "translateY(-10px)",
@@ -539,30 +550,33 @@ export const Navbar = () => {
                   }}
                 >
                   {cat.subcategorias.map((sub: any) => (
-                    <div 
-                      key={sub.id} 
+                    <div
+                      key={sub.id}
                       className="relative group/sub"
                       onMouseEnter={() => windowWidth !== null && windowWidth >= 1024 && setOpenSubId(sub.id)}
                       onMouseLeave={() => windowWidth !== null && windowWidth >= 1024 && setOpenSubId(null)}
                     >
                       {sub.subcategorias?.length > 0 ? (
-                        <button
-                          onClick={() => setOpenSubId(openSubId === sub.id ? null : sub.id)}
-                          className="w-full flex items-center justify-between px-4 py-2.5 text-sm transition-shadow text-slate-900 hover:shadow-sm rounded-md"
-                        >
-                          <span className="text-slate-900 group-hover/sub:text-black transition-colors">{sub.nombre}</span>
-                          <span 
-                            className="material-icons-round text-sm text-slate-500 hover:text-black transition-transform duration-200"
-                            style={{ transform: openSubId === sub.id ? "rotate(90deg)" : "rotate(0deg)" }}
+                        <>
+                          <button
+                            onClick={() => setOpenSubId(openSubId === sub.id ? null : sub.id)}
+                            className="w-full flex items-center justify-between px-4 py-2.5 text-sm transition-shadow hover:shadow-sm rounded-md"
                           >
-                            chevron_right
-                          </span>
+                            <span style={{ color: BRAND.white }} className="group-hover/sub:opacity-80 transition-opacity">{sub.nombre}</span>
+                            <span
+                              className="material-icons-round text-sm transition-transform duration-200"
+                              style={{ color: BRAND.gold, transform: openSubId === sub.id ? "rotate(90deg)" : "rotate(0deg)" }}
+                            >
+                              chevron_right
+                            </span>
+                          </button>
 
-                          {/* Dropdown nivel 2 */}
+                          {/* Dropdown nivel 2 — sibling del botón, no anidado dentro (evita <a> dentro de <button>) */}
                           <div
-                            className="absolute left-full top-0 ml-1 min-w-44 rounded-2xl border shadow-xl py-1.5 z-60 bg-white hover:text-black"
+                            className="absolute left-full top-0 ml-1 min-w-44 rounded-2xl border shadow-xl py-1.5 z-60"
                             style={{
-                              borderColor: "var(--border)",
+                              background: BRAND.bgSoft,
+                              borderColor: BRAND.border,
                               opacity: openSubId === sub.id ? "1" : "0",
                               pointerEvents: openSubId === sub.id ? "auto" : "none",
                               transform: openSubId === sub.id ? "translateX(0)" : "translateX(-10px)",
@@ -573,19 +587,21 @@ export const Navbar = () => {
                               <Link
                                 key={subsub.id}
                                 href={`${basePath}?cat=${cat.id}&sub=${sub.id}&subsub=${subsub.id}`}
-                                className="block px-4 py-2.5 text-sm hover:text-black transition-colors text-slate-900"
+                                className="block px-4 py-2.5 text-sm transition-colors"
+                                style={{ color: BRAND.white }}
                               >
-                                <span className="hover:text-black">{subsub.nombre}</span>
+                                <span className="hover:opacity-80">{subsub.nombre}</span>
                               </Link>
                             ))}
                           </div>
-                        </button>
+                        </>
                       ) : (
                         <Link
                           href={`${basePath}?cat=${cat.id}&sub=${sub.id}`}
-                          className="block px-4 py-2.5 text-sm transition-shadow text-slate-900 hover:shadow-sm rounded-md"
+                          className="block px-4 py-2.5 text-sm transition-shadow hover:shadow-sm rounded-md"
+                          style={{ color: BRAND.white }}
                         >
-                          <span className="group-hover/sub:text-black transition-colors">{sub.nombre}</span>
+                          <span className="group-hover/sub:opacity-80 transition-opacity">{sub.nombre}</span>
                         </Link>
                       )}
                     </div>
@@ -605,21 +621,24 @@ export const Navbar = () => {
         >
           <div
             className="absolute left-0 top-0 w-[85vw] max-w-xs max-h-[calc(100vh-80px)] overflow-y-auto shadow-2xl flex flex-col"
-            style={{ background: "#2d1810", color: "#ffffff" }}
+            style={{ background: BRAND.bg, color: BRAND.white }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header drawer */}
             <div
               className="flex items-center justify-between px-5 py-4 border-b"
-              style={{ borderColor: "rgba(252, 211, 77, 0.2)" }}
+              style={{ borderColor: BRAND.border }}
             >
-                              <span className="font-bold text-base" style={{ color: "#ffffff" }}>
-                Lumina Velas
+              <span
+                className="font-bold text-base"
+                style={{ color: BRAND.white, letterSpacing: "0.08em" }}
+              >
+                EPYKA <span style={{ color: BRAND.gold }}>DREAMS</span>
               </span>
               <button
                 onClick={() => setMobileOpen(false)}
                 className="p-1.5 rounded-xl transition-colors"
-                style={{ color: "#ffffff" }}
+                style={{ color: BRAND.white }}
               >
                 <span className="material-icons-round text-xl">close</span>
               </button>
@@ -629,7 +648,7 @@ export const Navbar = () => {
               {/* Búsqueda móvil */}
               <form
                 className="relative flex items-center gap-2 px-3 py-2 rounded-xl border mb-3"
-                style={{ background: "rgba(252, 211, 77, 0.1)", borderColor: "rgba(252, 211, 77, 0.3)" }}
+                style={{ background: "rgba(201, 162, 39, 0.08)", borderColor: BRAND.border }}
                 onSubmit={(e) => {
                   e.preventDefault();
                   if (searchValue.trim()) {
@@ -638,7 +657,7 @@ export const Navbar = () => {
                   }
                 }}
               >
-                                  <span className="material-icons-round text-lg" style={{ color: "#ffffff" }}>
+                <span className="material-icons-round text-lg" style={{ color: BRAND.white }}>
                   search
                 </span>
                 <input
@@ -646,25 +665,24 @@ export const Navbar = () => {
                   type="text"
                   placeholder="Buscar productos..."
                   className="bg-transparent outline-none text-sm flex-1"
-                  style={{ color: "#ffffff" }}
+                  style={{ color: BRAND.white }}
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   autoComplete="off"
                 />
 
-                {/* Dropdown sugerencias móvil */}
                 {searchValue.trim() && (
                   <div
                     className="absolute left-0 top-full mt-1 w-full rounded-xl border shadow-xl z-50 overflow-hidden"
                     style={{
-                      background: "#2d1810",
-                      borderColor: "rgba(252, 211, 77, 0.3)",
+                      background: BRAND.bg,
+                      borderColor: BRAND.border,
                       maxHeight: 300,
                       overflowY: "auto",
                     }}
                   >
                     {searchLoading ? (
-                      <div className="p-4 text-center text-sm" style={{ color: "#ffffff" }}>
+                      <div className="p-4 text-center text-sm" style={{ color: BRAND.white }}>
                         Buscando...
                       </div>
                     ) : suggestions.length > 0 ? (
@@ -676,7 +694,7 @@ export const Navbar = () => {
                             key={prod.id}
                             href={href}
                             className="flex items-center gap-3 px-4 py-2.5 transition-colors text-sm"
-                            style={{ color: "#ffffff" }}
+                            style={{ color: BRAND.white }}
                             onMouseDown={(e) => e.preventDefault()}
                             onClick={() => {
                               setMobileOpen(false);
@@ -692,7 +710,7 @@ export const Navbar = () => {
                             )}
                             <span className="truncate flex-1">{prod.nombre}</span>
                             {prod.marca && (
-                              <span className="text-xs shrink-0" style={{ color: "rgba(255,255,255,0.6)" }}>
+                              <span className="text-xs shrink-0" style={{ color: BRAND.textMuted }}>
                                 {prod.marca}
                               </span>
                             )}
@@ -700,7 +718,7 @@ export const Navbar = () => {
                         );
                       })
                     ) : (
-                      <div className="p-4 text-center text-sm" style={{ color: "#ffffff" }}>
+                      <div className="p-4 text-center text-sm" style={{ color: BRAND.white }}>
                         Sin resultados
                       </div>
                     )}
@@ -714,7 +732,7 @@ export const Navbar = () => {
                   key={link.href}
                   href={link.href}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors"
-                  style={{ color: "#ffffff" }}
+                  style={{ color: BRAND.white }}
                 >
                   {link.label}
                 </a>
@@ -723,17 +741,14 @@ export const Navbar = () => {
               {/* Categorías en acordeón */}
               <MobileCategoriesAccordion basePath={basePath} />
 
-              {/* Divisor */}
-              <div className="border-t my-2" style={{ borderColor: "rgba(252, 211, 77, 0.2)" }} />
-              <div className="border-t my-2" style={{ borderColor: "rgba(252, 211, 77, 0.2)" }} />
+              <div className="border-t my-2" style={{ borderColor: BRAND.border }} />
 
-              {/* Usuario - Opciones si está autenticado */}
               {user && (
                 <>
                   <a
                     href="/admin/perfil"
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors"
-                    style={{ color: "#ffffff" }}
+                    style={{ color: BRAND.white }}
                   >
                     <span className="material-icons-round text-base">person</span>
                     Perfil
@@ -741,7 +756,7 @@ export const Navbar = () => {
                   <a
                     href="/admin/config"
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors"
-                    style={{ color: "#ffffff" }}
+                    style={{ color: BRAND.white }}
                   >
                     <span className="material-icons-round text-base">settings</span>
                     Configuración
@@ -764,10 +779,8 @@ export const Navbar = () => {
           </div>
         </div>
       )}
-
     </>
   );
 };
 
 export default Navbar;
-
