@@ -19,8 +19,7 @@ const IconFacebook = () => (
 );
 
 const socialLinks = [
-  { href: "https://www.instagram.com/epyka.dreams/", label: "Instagram", Icon: IconInstagram },
-  { href: "https://www.facebook.com/people/epyka_dreams/100090258981278/", label: "Facebook", Icon: IconFacebook },
+  { href: "https://www.instagram.com/juliana.basics/", label: "Instagram", Icon: IconInstagram },
 ];
 
 const Footer: React.FC = () => {
@@ -60,7 +59,7 @@ const Footer: React.FC = () => {
         {/* Copyright row */}
         <div className={styles.ftCopyRow}>
           <p className={styles.ftCopyText}>
-            © {new Date().getFullYear()} Epika Dreams 2026. Todos los derechos reservados.
+            © {new Date().getFullYear()} Juliana Basics 2026. Todos los derechos reservados.
           </p>
           <div className={styles.ftCopyRight}>
             <div className={styles.ftBadge}>

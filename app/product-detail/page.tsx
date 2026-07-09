@@ -187,7 +187,7 @@ export default function ProductDetailPage({ params }) {
   // ── Loading skeleton ─────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-black flex flex-col items-center justify-center mt-2">
+      <div className="min-h-screen bg-[var(--bg)] flex flex-col items-center justify-center mt-2">
         <Loading3DIcon />
         <span className="mt-4 text-slate-400 dark:text-white/30 text-sm">Cargando producto...</span>
       </div>
@@ -196,7 +196,7 @@ export default function ProductDetailPage({ params }) {
 
   if (!producto) {
     return (
-      <div className="min-h-screen bg-white dark:bg-[#0e0520] flex flex-col items-center justify-center mt-2 gap-3">
+      <div className="min-h-screen bg-[var(--bg)] flex flex-col items-center justify-center mt-2 gap-3">
         <span className="material-icons-round text-5xl text-slate-200 dark:text-white/10">inventory_2</span>
         <p className="text-slate-400 dark:text-white/30 font-medium">Producto no encontrado</p>
       </div>
@@ -350,7 +350,7 @@ export default function ProductDetailPage({ params }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col mt-2 bg-white dark:bg-black text-slate-900 dark:text-white transition-colors">
+    <div className="min-h-screen flex flex-col mt-2 bg-[var(--bg)] text-[var(--text)] transition-colors">
       <BottomBarPublic/>
 
       <div className="max-w-5xl mx-auto w-full px-3 sm:px-6 py-6 sm:py-10">
@@ -360,9 +360,9 @@ export default function ProductDetailPage({ params }) {
           <div className={`w-full ${imageContainerWidthClass} flex flex-col gap-3`}>
 
             {/* Imagen principal */}
-            <div className="relative aspect-square rounded-2xl overflow-hidden dark:bg-white/[0.03] border border-slate-100 dark:border-white/[0.06]">
+            <div className="relative aspect-square rounded-2xl overflow-hidden bg-[var(--card)] border border-[var(--border)]">
               {hasDiscount && (
-                <span className="absolute top-3 left-3 z-10 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                <span className="absolute top-3 left-3 z-10 bg-[var(--secondary)] text-[var(--secondaryForeground)] text-xs font-bold px-2 py-0.5 rounded-full">
                   -{discount}%
                 </span>
               )}
@@ -374,7 +374,7 @@ export default function ProductDetailPage({ params }) {
               {producto.imagenes.length > 1 && imgIdx > 0 && (
                 <button
                   onClick={() => setImgIdx(imgIdx - 1)}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow flex items-center justify-center hover:scale-105 transition-transform"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[var(--card)] border border-[var(--border)] shadow flex items-center justify-center hover:scale-105 transition-transform"
                 >
                   <span className="material-icons-round text-slate-600 dark:text-white/70 text-lg">chevron_left</span>
                 </button>
@@ -382,7 +382,7 @@ export default function ProductDetailPage({ params }) {
               {producto.imagenes.length > 1 && imgIdx < producto.imagenes.length - 1 && (
                 <button
                   onClick={() => setImgIdx(imgIdx + 1)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow flex items-center justify-center hover:scale-105 transition-transform"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[var(--card)] border border-[var(--border)] shadow flex items-center justify-center hover:scale-105 transition-transform"
                 >
                   <span className="material-icons-round text-slate-600 dark:text-white/70 text-lg">chevron_right</span>
                 </button>
@@ -396,7 +396,7 @@ export default function ProductDetailPage({ params }) {
                   <button
                     key={idx}
                     onClick={() => setImgIdx(idx)}
-                    className={`flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all bg-slate-50 dark:bg-white/5 ${
+                    className={`flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all bg-[var(--bgSecondary)] ${
                       imgIdx === idx
                         ? "border-slate-400 dark:border-white/30 scale-105"
                         : "border-transparent opacity-50 hover:opacity-80"
@@ -417,8 +417,8 @@ export default function ProductDetailPage({ params }) {
                     onClick={() => handleTabToggle("caracteristicas")}
                     className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold transition-all ${
                       activeTab === "caracteristicas"
-                            ? "bg-black text-white"
-                            : "bg-white text-slate-600 hover:bg-slate-50"
+                            ? "bg-[var(--primary)] text-[var(--primaryForeground)]"
+                            : "bg-[var(--card)] text-[var(--text)] hover:bg-[var(--bgSecondary)]"
                     }`}
                   >
                     <span className="material-icons-round text-[16px]">list_alt</span>
@@ -431,8 +431,8 @@ export default function ProductDetailPage({ params }) {
                     hasCaracteristicas ? "border-l border-slate-200 dark:border-white/[0.08]" : ""
                   } ${
                     activeTab === "resenas"
-                      ? "bg-black text-white"
-                      : "bg-white text-slate-600 hover:bg-slate-50"
+                            ? "bg-[var(--primary)] text-[var(--primaryForeground)]"
+                            : "bg-[var(--card)] text-[var(--text)] hover:bg-[var(--bgSecondary)]"
                   }`}
                 >
                   <span className="material-icons-round text-[16px]">star_outline</span>
@@ -451,7 +451,7 @@ export default function ProductDetailPage({ params }) {
 
               {/* Panel de contenido del tab activo */}
               {activeTab && (
-                <div className="border border-t-0 border-slate-200 dark:border-white/[0.08] rounded-b-xl px-4 py-4 bg-slate-50 dark:bg-white/[0.02]">
+                <div className="border border-t-0 border-[var(--border)] rounded-b-xl px-4 py-4 bg-[var(--bgSecondary)]">
 
                   {/* Panel: Características */}
                   {activeTab === "caracteristicas" && hasCaracteristicas && (
@@ -615,7 +615,7 @@ export default function ProductDetailPage({ params }) {
             {maxCantidad > 0 && (
               <div className="flex items-center gap-3">
                 <span className="text-xs text-slate-400 dark:text-white/30 font-medium">Cantidad:</span>
-                <div className="flex items-center bg-slate-100 dark:bg-white/[0.06] rounded-xl p-1 gap-1">
+                <div className="flex items-center bg-[var(--bgSecondary)] rounded-xl p-1 gap-1">
                   <button
                     onClick={() => setCantidad((v) => Math.max(1, v - 1))}
                     className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-white/60 hover:bg-white dark:hover:bg-white/10 font-bold text-lg transition-colors"
@@ -640,8 +640,8 @@ export default function ProductDetailPage({ params }) {
                   maxCantidad === 0 || (hasVariations && variationAttributeIds.length > 0 && !variationAttributeIds.every(attrId => selectedVariations[attrId]))
                     ? "bg-white text-slate-300 border-slate-200 cursor-not-allowed opacity-50 shadow-none"
                     : inCart
-                      ? "bg-white text-black border-black/40 hover:border-black/60 hover:shadow-md"
-                      : "bg-white text-slate-900 border-black/30 hover:border-black hover:shadow-md"
+                      ? "bg-[var(--card)] text-[var(--text)] border-[var(--primary)] hover:border-[var(--primaryHover)] hover:shadow-md"
+                      : "bg-[var(--card)] text-[var(--text)] border-[var(--border)] hover:border-[var(--primary)] hover:shadow-md"
                 }`}
               >
                 <span className="material-icons-round text-[18px]">
@@ -656,7 +656,7 @@ export default function ProductDetailPage({ params }) {
                   className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${
                     isFav
                       ? "bg-red-500 text-white shadow"
-                      : "bg-white border border-slate-300 text-slate-500 hover:border-black/40 hover:text-black hover:shadow-sm"
+                      : "bg-[var(--card)] border border-[var(--border)] text-[var(--text)] hover:border-[var(--primary)] hover:text-[var(--primary)] hover:shadow-sm"
                   }`}
                   title={isFav ? "Quitar de favoritos" : "Agregar a favoritos"}
                 >
@@ -722,20 +722,6 @@ export default function ProductDetailPage({ params }) {
                 ))}
               </ul>
             )}
-
-            {/* Banner login */}
-            {!isLogged && (
-              <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-white/25 bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.04] rounded-xl px-3 py-2.5">
-                <span className="material-icons-round text-sm flex-shrink-0">info</span>
-                <span>
-                  Mejor experiencia al{" "}
-                  <a href="/login?tab=register" className="underline underline-offset-2 text-slate-600 dark:text-white/40 hover:text-slate-900 dark:hover:text-white/70 transition-colors">
-                    iniciar sesión
-                  </a>
-                </span>
-              </div>
-            )}
-
           </div>
 
         </div>

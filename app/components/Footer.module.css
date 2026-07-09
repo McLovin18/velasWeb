@@ -1,6 +1,6 @@
 .pdxFooter {
-  background: #0c0c01;
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--primaryForeground);
   position: relative;
   overflow: hidden;
 }
@@ -78,7 +78,7 @@
   font-weight: var(--font-heading-weight);
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #E0A11A;
+  color: var(--secondary);
   margin-bottom: 18px;
   display: block;
 }
@@ -113,13 +113,13 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #c88c0a;
+  background: var(--secondaryHover);
   flex-shrink: 0;
   transition: background 0.18s;
 }
 
 .ftLinks a:hover .ftDot {
-  background: #E0A11A;
+  background: var(--secondary);
 }
 
 .ftContactItem {
@@ -136,7 +136,7 @@
   font-weight: var(--font-heading-weight);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #E0A11A;
+  color: var(--secondary);
 }
 
 .ftContactVal {
@@ -189,8 +189,8 @@ a.ftContactVal:hover {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(224, 161, 26, 0.25) 30%,
-    rgba(224, 161, 26, 0.25) 70%,
+    color-mix(in srgb, var(--secondary) 25%, transparent) 30%,
+    color-mix(in srgb, var(--secondary) 25%, transparent) 70%,
     transparent
   );
   margin: 0 32px;
@@ -307,7 +307,7 @@ a.ftContactVal:hover {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #c88c0a;
+  background: var(--secondary);
   flex-shrink: 0;
 }
 
@@ -319,7 +319,7 @@ a.ftContactVal:hover {
 }
 
 .ftDevLink:hover {
-  color: #E0A11A;
+  color: var(--secondary);
 }
 
 .ftLegalWrap {

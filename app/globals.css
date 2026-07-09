@@ -2,13 +2,60 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fffaf0;
-  --foreground: #2d1810;
-  --bg: #fef7ed;
-  --bgSecondary: #fffaf0;
-  --text: #2d1810;
-  --textSecondary: #92400e;
-  --border: #fcd34d;
+  /* ============================================================
+     PALETA DE COLORES — Tienda Virtual
+     Tobacco  #B59E7D
+     Mahogany #584738
+     Vanilla  #F1EADA
+     Mountain #AAA396
+     Sand     #CEC1A8
+     ============================================================ */
+
+  /* --- Colores base de la paleta (para uso directo si se necesita) --- */
+  --color-tobacco: #b59e7d;
+  --color-mahogany: #584738;
+  --color-vanilla: #f1eada;
+  --color-mountain: #aaa396;
+  --color-sand: #cec1a8;
+
+  /* --- Variantes derivadas (hover / active) --- */
+  --color-mahogany-dark: #3f332a;   /* mahogany oscurecido, hover en botones oscuros */
+  --color-tobacco-dark: #9c8567;    /* tobacco oscurecido, hover en botones tobacco */
+  --color-vanilla-dark: #e7dcc8;    /* vanilla oscurecido, hover sobre fondos claros */
+
+  /* --- Semántica --- */
+  --background: var(--color-vanilla);
+  --foreground: var(--color-mahogany);
+
+  --bg: var(--color-vanilla);
+  --bgSecondary: var(--color-sand);
+
+  --text: var(--color-mahogany);
+  --textSecondary: var(--color-tobacco);
+
+  --border: var(--color-sand);
+
+  /* --- Colores de marca / acción --- */
+  --primary: var(--color-mahogany);
+  --primaryHover: var(--color-mahogany-dark);
+  --primaryForeground: var(--color-vanilla);
+
+  --secondary: var(--color-tobacco);
+  --secondaryHover: var(--color-tobacco-dark);
+  --secondaryForeground: var(--color-mahogany);
+
+  --accent: var(--color-mountain);
+  --accentForeground: var(--color-mahogany);
+
+  --muted: var(--color-sand);
+  --mutedForeground: var(--color-tobacco);
+
+  --card: var(--color-vanilla);
+  --cardForeground: var(--color-mahogany);
+
+  --galleryImgBg: var(--color-sand);
+
+  /* --- Tipografía (sin cambios) --- */
   --font-body-family: Georgia, serif;
   --font-body-style: normal;
   --font-body-weight: 400;
@@ -23,33 +70,20 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primaryForeground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondaryForeground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accentForeground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--mutedForeground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--cardForeground);
+  --color-border: var(--border);
   --font-sans: var(--font-body-family);
   --font-serif: var(--font-heading-family);
   --font-mono: var(--font-body-family);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #1a0f0a;
-    --foreground: #fef3c7;
-    --bg: #2d1810;
-    --bgSecondary: #1a0f0a;
-    --text: #fef3c7;
-    --textSecondary: #fcd34d;
-    --border: #78350f;
-  }
-}
-
-/* Dark class selector (para manual toggle) */
-.dark {
-  --background: #1a0f0a;
-  --foreground: #fef3c7;
-  --bg: #2d1810;
-  --bgSecondary: #1a0f0a;
-  --text: #fef3c7;
-  --textSecondary: #fcd34d;
-  --border: #78350f;
-  --galleryImgBg: #2d1810;
 }
 
 body {

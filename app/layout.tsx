@@ -15,8 +15,8 @@ import { Source_Serif_4 } from "next/font/google";
 // Optimiza regeneración de página principal y otros contenidos estáticos
 export const revalidate = 1800;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://velaspersonalizadas.com";
-const SITE_NAME = "Mikartesana Velas";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://julianabasics.com";
+const SITE_NAME = "Juliana Basics";
 const sourceSerif4 = Source_Serif_4({
   subsets: ["latin"],
   weight: ["400"],
@@ -26,21 +26,22 @@ const sourceSerif4 = Source_Serif_4({
 
 export const metadata: Metadata = {
   title: {
-    default: "Mikartesana Velas - Velas Personalizadas y Artesanales",
-    template: "%s | Lumina Velas",
+    default: "Juliana Basics - Moda & Outfits",
+    template: "%s | Juliana Basics",
   },
   description:
-    "Tienda de velas personalizadas y artesanales. Creamos velas únicas para momentos especiales, decoración y regalos. Envíos a todo Ecuador.",
+    "Tienda de moda y outfits. Descubre las últimas tendencias en ropa y accesorios, con piezas pensadas para cada estilo. Envíos a todo Ecuador.",
   keywords: [
-    "velas personalizadas",
-    "velas artesanales",
-    "velas Ecuador",
-    "velas decorativas",
-    "velas aromáticas",
-    "regalos personalizados",
-    "Mikartesana Velas",
+    "moda",
+    "outfits",
+    "ropa",
+    "tienda de ropa Ecuador",
+    "tendencias moda",
+    "accesorios",
+    "estilo",
+    "Juliana Basics",
   ],
-  creator: "Mikartesana Velas",
+  creator: "Juliana Basics",
   metadataBase: new URL(SITE_URL),
   icons: {
     icon: "/favicon.ico",
@@ -48,22 +49,22 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
-  
+
   // Open Graph - Redes Sociales
   openGraph: {
     type: "website",
     locale: "es_ES",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: "Mikartesana Velas - Velas Personalizadas y Artesanales",
+    title: "Juliana Basics - Moda & Outfits",
     description:
-      "Compra velas personalizadas y artesanales. Creamos velas únicas para momentos especiales con envíos a todo Ecuador.",
+      "Descubre las últimas tendencias en ropa y accesorios. Piezas pensadas para cada estilo, con envíos a todo Ecuador.",
     images: [
       {
         url: `${SITE_URL}/og-image.jpg`,
         width: 1200,
         height: 630,
-        alt: "Mikartesana Velas - Velas Personalizadas Artesanales",
+        alt: "Juliana Basics - Moda & Outfits",
         type: "image/jpeg",
       },
     ],
@@ -72,9 +73,9 @@ export const metadata: Metadata = {
   // Twitter Card
   twitter: {
     card: "summary_large_image",
-    title: "Mikartesana Velas - Velas Personalizadas y Artesanales",
+    title: "Juliana Basics - Moda & Outfits",
     description:
-      "Compra velas personalizadas y artesanales. Envíos a todo Ecuador.",
+      "Descubre las últimas tendencias en ropa y accesorios. Envíos a todo Ecuador.",
     images: [`${SITE_URL}/twitter-image.jpg`],
   },
 
@@ -122,7 +123,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className={sourceSerif4.variable}>
       <head>
-                {/* Google Analytics gtag.js - insertado justo después de <head> */}
+        {/* Google Analytics gtag.js - insertado justo después de <head> */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-K1Q0MYDSKF"></script>
         <script
           dangerouslySetInnerHTML={{
@@ -147,4 +148,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
-

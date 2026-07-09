@@ -32,16 +32,16 @@ const cardStyles = `
     flex-direction: column;
     width: 100%;
     height: 100%;
-    background: #ffff;
+    background: var(--card);
     overflow: hidden;
     cursor: pointer;
-    border: 1px solid transparent;
+    border: 1px solid var(--border);
     transition: border-color 0.25s, box-shadow 0.25s;
   }
 
   .pc-card:hover {
-    border-color: #d4af37;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+    border-color: var(--secondary);
+    box-shadow: 0 8px 40px color-mix(in srgb, var(--primary) 14%, transparent);
   }
 
   /* ── imagen ── */
@@ -50,7 +50,7 @@ const cardStyles = `
     width: 100%;
     /* aspect-ratio cuadrado en mobile, más alto en desktop */
     aspect-ratio: 1 / 1.05;
-    background: #fffff;
+    background: var(--galleryImgBg);
     overflow: hidden;
     flex-shrink: 0;
   }
@@ -77,8 +77,8 @@ const cardStyles = `
     top: 10px;
     left: 10px;
     z-index: 10;
-    background: #e63946;
-    color: #fff;
+    background: var(--secondary);
+    color: var(--secondaryForeground);
     font-family: 'Barlow', sans-serif;
     font-size: 10px;
     font-weight: 700;
@@ -104,9 +104,9 @@ const cardStyles = `
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #888;
-    background: #fff;
-    border: 1px solid #ddd;
+    color: var(--mutedForeground);
+    background: var(--card);
+    border: 1px solid var(--border);
     padding: 5px 12px;
     border-radius: 2px;
   }
@@ -135,8 +135,8 @@ const cardStyles = `
   .pc-fav.is-fav {
     opacity: 1;
     transform: scale(1);
-    background: #e63946;
-    color: #fff;
+    background: var(--secondary);
+    color: var(--secondaryForeground);
   }
 
   .pc-card:hover .pc-fav {
@@ -146,8 +146,8 @@ const cardStyles = `
 
   /* ── barra info inferior — estilo imagen: negro total ── */
   .pc-info {
-    background: #0a0a0a;
-    color: #fff;
+    background: var(--primary);
+    color: var(--primaryForeground);
     padding: 10px 12px 12px;
     display: flex;
     flex-direction: column;
@@ -260,8 +260,8 @@ const cardStyles = `
   }
 
   .pc-btn-cart.in-cart {
-    border-color: #d4af37;
-    color: #d4af37;
+    border-color: var(--secondary);
+    color: var(--secondary);
   }
 
   .pc-btn-eye {

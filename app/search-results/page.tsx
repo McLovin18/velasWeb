@@ -151,7 +151,7 @@ export default function SearchResultsPage() {
     <div className="min-h-screen flex flex-col transition-colors" style={{ background: "var(--bg)", color: "var(--text)" }}>
       <BottomBarPublic/>
 
-      <main className="max-w-350 mx-auto px-3 sm:px-5 py-8 flex-1">
+      <main className="max-w-7xl mx-auto w-full px-3 sm:px-5 py-6 sm:py-15 flex-1">
         <div className="mb-6">
           {FilterPanel}
         </div>

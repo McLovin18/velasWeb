@@ -15,17 +15,17 @@ import { useUser } from "../context/UserContext";
 import { productMatches } from "../lib/search-utils";
 
 // ─────────────────────────────────────────────
-// Paleta de marca — Epyka Dreams (oscuro elegante)
+// Paleta de marca — Tienda Virtual
 // ─────────────────────────────────────────────
 const BRAND = {
-  bg: "#0d0d0d",          // negro base del navbar
-  bgSoft: "#161616",      // negro secundario (drawer, dropdowns dark)
-  gold: "#C9A227",        // dorado principal (acentos, iconos activos)
-  goldBright: "#E4C158",  // dorado hover/brillante
-  border: "rgba(201, 162, 39, 0.25)", // borde dorado translúcido
-  borderSoft: "rgba(201, 162, 39, 0.15)",
-  white: "#ffffff",
-  textMuted: "rgba(255,255,255,0.7)",
+  bg: "var(--primary)",
+  bgSoft: "var(--bgSecondary)",
+  gold: "var(--secondary)",
+  goldBright: "var(--secondaryHover)",
+  border: "var(--border)",
+  borderSoft: "color-mix(in srgb, var(--border) 70%, transparent)",
+  white: "var(--primaryForeground)",
+  textMuted: "color-mix(in srgb, var(--primaryForeground) 80%, transparent)",
 };
 
 // ─────────────────────────────────────────────
@@ -252,14 +252,10 @@ export const Navbar = () => {
   const links = [
     { href: "/", label: "Inicio" },
     { href: "/productos", label: "Catálogo" },
-    { href: "/personalizados", label: "Personalizados" },
+    { href: "/blogs", label: "Blogs" },
 
   ];
 
-  const infoSliderItems = [
-    { text: "✨ Personaliza tu termo con grabado láser desde $X →", href: "/grabado-laser" },
-    "🚚 Envíos a todo el Ecuador — Guayaquil, La Alborada",
-  ];
 
   const handleSearch = () => {
     if (!searchValue.trim()) return;
@@ -272,10 +268,7 @@ export const Navbar = () => {
 
   return (
     <>
-      {/* ══════════════════ INFORMATIVE SLIDER ══════════════════ */}
-      <InfoSlider items={infoSliderItems} />
 
-      {/* ══════════════════ NAVBAR ══════════════════ */}
       <nav
         className="sticky top-0 z-40 border-b py-3 shadow-sm backdrop-blur-md"
         style={{ background: BRAND.bg, borderColor: BRAND.border }}
@@ -317,7 +310,7 @@ export const Navbar = () => {
                 className="font-heading whitespace-nowrap text-xl sm:text-2xl"
                 style={{ letterSpacing: "0.12em", color: BRAND.white }}
               >
-                EPYKA <span style={{ color: BRAND.gold }}>DREAMS</span>
+                JULIANA <span style={{ color: BRAND.gold }}>BASICS</span>
               </span>
             </a>
           </div>

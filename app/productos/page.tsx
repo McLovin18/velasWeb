@@ -272,7 +272,13 @@ export default function ProductosPage() {
   }, []);
 
   const inputCls =
-    "px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-#e8c862 transition-all";
+    "px-3 py-2 rounded-xl border text-sm transition-all";
+  const inputStyle = {
+    borderColor: "var(--border)",
+    background: "var(--card)",
+    color: "var(--text)",
+    boxShadow: "none",
+  };
 
   return (
     <div className="min-h-screen flex flex-col transition-colors" style={{ background: "var(--bg)", color: "var(--text)" }}>

@@ -120,8 +120,8 @@ const Contacto: React.FC = () => {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          border: 1px solid rgba(220,180,50,0.35);
-          color: #dcb432;
+          border: 1px solid color-mix(in srgb, var(--secondary) 35%, transparent);
+          color: var(--secondary);
           font-size: 10px;
           font-weight: 600;
           letter-spacing: 0.25em;
@@ -135,7 +135,7 @@ const Contacto: React.FC = () => {
           width: 5px;
           height: 5px;
           border-radius: 50%;
-          background: #dcb432;
+          background: var(--secondary);
           animation: ct-pulse 2s ease-in-out infinite;
         }
 
@@ -156,7 +156,7 @@ const Contacto: React.FC = () => {
         }
 
         .ct-title span {
-          color: #dcb432;
+          color: var(--secondary);
           font-style: italic;
           font-family: 'Cormorant Garamond', serif;
           font-size: 0.75em;
@@ -179,7 +179,7 @@ const Contacto: React.FC = () => {
           z-index: 2;
           width: 60px;
           height: 1px;
-          background: linear-gradient(90deg, transparent, #dcb432, transparent);
+          background: linear-gradient(90deg, transparent, var(--secondary), transparent);
           margin: 28px auto;
         }
 
@@ -225,8 +225,8 @@ const Contacto: React.FC = () => {
         }
 
         .ct-card:hover {
-          border-color: rgba(220,180,50,0.3);
-          box-shadow: 0 0 0 1px rgba(220,180,50,0.1), 0 24px 60px rgba(0,0,0,0.6);
+          border-color: color-mix(in srgb, var(--secondary) 30%, transparent);
+          box-shadow: 0 0 0 1px color-mix(in srgb, var(--secondary) 10%, transparent), 0 24px 60px rgba(0,0,0,0.6);
           transform: translateY(-3px);
         }
 
@@ -264,8 +264,8 @@ const Contacto: React.FC = () => {
         }
 
         .ct-card-wa:hover {
-          border-color: rgba(220,180,50,0.4);
-          box-shadow: 0 0 0 1px rgba(220,180,50,0.15), 0 30px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(220,180,50,0.1);
+          border-color: color-mix(in srgb, var(--secondary) 40%, transparent);
+          box-shadow: 0 0 0 1px color-mix(in srgb, var(--secondary) 15%, transparent), 0 30px 80px rgba(0,0,0,0.7), inset 0 1px 0 color-mix(in srgb, var(--secondary) 10%, transparent);
         }
 
         /* ─── ICON ─── */
@@ -273,12 +273,12 @@ const Contacto: React.FC = () => {
           width: 44px;
           height: 44px;
           border-radius: 10px;
-          border: 1px solid rgba(220,180,50,0.2);
-          background: rgba(220,180,50,0.06);
+          border: 1px solid color-mix(in srgb, var(--secondary) 20%, transparent);
+          background: color-mix(in srgb, var(--secondary) 6%, transparent);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #dcb432;
+          color: var(--secondary);
           flex-shrink: 0;
         }
 
@@ -314,7 +314,7 @@ const Contacto: React.FC = () => {
         }
 
         .ct-card-sub strong {
-          color: #dcb432;
+          color: var(--secondary);
           font-weight: 500;
         }
 
@@ -323,8 +323,8 @@ const Contacto: React.FC = () => {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          background: #dcb432;
-          color: #080808;
+          background: var(--secondary);
+          color: var(--secondaryForeground);
           font-weight: 700;
           font-size: 12px;
           letter-spacing: 0.06em;
@@ -339,9 +339,9 @@ const Contacto: React.FC = () => {
         }
 
         .ct-cta:hover {
-          background: #f0ca50;
+          background: var(--secondaryHover);
           transform: translateY(-1px);
-          box-shadow: 0 8px 24px rgba(220,180,50,0.3);
+          box-shadow: 0 8px 24px color-mix(in srgb, var(--secondary) 30%, transparent);
         }
 
         /* ─── COPY BTN ─── */
@@ -350,8 +350,8 @@ const Contacto: React.FC = () => {
           align-items: center;
           gap: 6px;
           background: transparent;
-          border: 1px solid rgba(220,180,50,0.25);
-          color: #dcb432;
+          border: 1px solid color-mix(in srgb, var(--secondary) 25%, transparent);
+          color: var(--secondary);
           font-size: 11px;
           font-weight: 500;
           letter-spacing: 0.08em;
@@ -364,8 +364,8 @@ const Contacto: React.FC = () => {
         }
 
         .ct-copy-btn:hover {
-          background: rgba(220,180,50,0.08);
-          border-color: rgba(220,180,50,0.5);
+          background: color-mix(in srgb, var(--secondary) 8%, transparent);
+          border-color: color-mix(in srgb, var(--secondary) 50%, transparent);
         }
 
         /* ─── HORARIO ─── */
@@ -420,7 +420,7 @@ const Contacto: React.FC = () => {
 
         .ct-social-arrow {
           margin-left: auto;
-          color: #dcb432;
+          color: var(--secondary);
           font-size: 16px;
           opacity: 0;
           transform: translateX(-4px);
@@ -447,8 +447,8 @@ const Contacto: React.FC = () => {
           align-items: center;
           gap: 5px;
           font-size: 10px;
-          color: #dcb432;
-          border: 1px solid rgba(220,180,50,0.25);
+          color: var(--secondary);
+          border: 1px solid color-mix(in srgb, var(--secondary) 25%, transparent);
           padding: 3px 10px;
           border-radius: 20px;
           font-weight: 500;
@@ -475,7 +475,7 @@ const Contacto: React.FC = () => {
         }
 
         .ct-footer a {
-          color: #dcb432;
+          color: var(--secondary);
           font-size: 12px;
           text-decoration: none;
           letter-spacing: 0.05em;

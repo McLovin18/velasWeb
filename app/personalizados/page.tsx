@@ -63,7 +63,7 @@ export default function PersonalizadosPage() {
       <main className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em]" style={{ color: "#f59e0b" }}>Personalizados</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em]" style={{ color: "var(--secondary)" }}>Personalizados</p>
             <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Velas Personalizadas</h1>
             <p className="mt-2 max-w-2xl text-sm" style={{ color: "var(--textSecondary)" }}>
               Aquí solo aparecen los productos que puedes personalizar a tu gusto. Agrega tu toque único a cada vela.
@@ -71,8 +71,8 @@ export default function PersonalizadosPage() {
           </div>
           <Link
             href="/products-by-category"
-            className="inline-flex w-fit items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
-            style={{ background: "#2d1810" }}
+            className="inline-flex w-fit items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-[var(--primaryForeground)] transition hover:opacity-90"
+            style={{ background: "var(--primary)" }}
           >
             Ver catálogo
             <span className="material-icons-round text-base">arrow_forward</span>
@@ -85,10 +85,10 @@ export default function PersonalizadosPage() {
               onClick={() => setSelectedCategoryId("")}
               className={`px-4 py-2 rounded-full whitespace-nowrap font-medium text-sm transition-all ${
                 selectedCategoryId === ""
-                  ? "shadow-sm scale-105 text-white"
-                  : "text-slate-900 border border-slate-300 hover:border-black/60 hover:shadow-sm"
+                  ? "shadow-sm scale-105 text-[var(--primaryForeground)]"
+                  : "text-[var(--text)] border border-[var(--border)] hover:border-[var(--primary)] hover:shadow-sm"
               }`}
-              style={selectedCategoryId === "" ? { background: "#2d1810" } : { background: "white" }}
+              style={selectedCategoryId === "" ? { background: "var(--primary)" } : { background: "var(--card)" }}
             >
               Todas
             </button>
@@ -99,10 +99,10 @@ export default function PersonalizadosPage() {
                 onClick={() => setSelectedCategoryId(cat.id)}
                 className={`px-4 py-2 rounded-full whitespace-nowrap font-medium text-sm transition-all ${
                   selectedCategoryId === cat.id
-                    ? "shadow-sm scale-105 text-white"
-                    : "text-slate-900 border border-slate-300 hover:border-black/60 hover:shadow-sm"
+                    ? "shadow-sm scale-105 text-[var(--primaryForeground)]"
+                    : "text-[var(--text)] border border-[var(--border)] hover:border-[var(--primary)] hover:shadow-sm"
                 }`}
-                style={selectedCategoryId === cat.id ? { background: "#2d1810" } : { background: "white" }}
+                style={selectedCategoryId === cat.id ? { background: "var(--primary)" } : { background: "var(--card)" }}
               >
                 {cat.nombre}
               </button>
@@ -123,7 +123,7 @@ export default function PersonalizadosPage() {
           </div>
         ) : (
           <>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold" style={{ background: "#fef3c7", color: "#92400e" }}>
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold" style={{ background: "color-mix(in srgb, var(--secondary) 15%, white)", color: "var(--primary)" }}>
               <span className="material-icons-round text-base">auto_awesome</span>
               {productosPersonalizados.length} productos personalizables
             </div>
