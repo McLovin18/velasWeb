@@ -514,7 +514,6 @@ export default function HeroSection({
                   style={{ ...defaultButtonInlineStyle, ...buttonTextStyle }}
                 >
                   <span>{current.buttonText}</span>
-                  <span className="material-icons-round text-xs sm:text-sm">arrow_forward</span>
                 </a>
               </div>
             )}
