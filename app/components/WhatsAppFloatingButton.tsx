@@ -5,13 +5,14 @@ import React, { useState } from "react";
 /**
  * Botón flotante tipo "timbre".
  * - Círculo principal con animación de salto suave (llama la atención).
- * - Al hacer click despliega hacia arriba los íconos de contacto (WhatsApp, Instagram).
+ * - Al hacer click despliega hacia arriba los íconos de contacto (Ubicación, Instagram, WhatsApp).
  * - Al volver a hacer click, se ocultan.
- * - Colores tomados de la paleta del proyecto (mahogany, tobacco, mountain, vanilla).
+ * - Colores tomados de la paleta del proyecto (mahogany, tobacco, mountain, sand, vanilla).
  */
 
 const WHATSAPP_URL = "https://wa.me/593988705890";
-const INSTAGRAM_URL = "https://www.instagram.com/juliana.basics/"; // 👉 reemplaza por el usuario real
+const INSTAGRAM_URL = "https://www.instagram.com/juliana.basics/";
+const MAPS_URL = "https://l.instagram.com/?u=https%3A%2F%2Fmaps.app.goo.gl%2FB4LVAYLxvMuwXsuE9%3Fg_st%3Dic%26utm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio%26fbclid%3DPAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPOTM2NjE5NzQzMzkyNDU5AAGn_oqrYzsBMtPRc2N2aptDbGXg-iG5-VFhRCD6m4VnleH_jHY5zLezUdJza74_aem_B3z_UlltnRGnSSLfWrFf4w&e=AUD8pWkXfdA34eOteUrOjVR1HPRDj6F7-to54sCO4vLiuhm1_Mlp2-GkL3MlI46kCH00PHVdOMrM-W9V32NSvMywrrydKa5uKx-XFxb_vRVGZuWMIZrLC9G1j6ofwMn3GLJ2er0"; // 👉 reemplaza por el enlace real de Google Maps
 
 const FloatingContactButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +38,7 @@ const FloatingContactButton: React.FC = () => {
           }
         }
 
-        /* --- Íconos secundarios (whatsapp / instagram) --- */
+        /* --- Íconos secundarios (ubicación / instagram / whatsapp) --- */
         .fab-item {
           width: 48px;
           height: 48px;
@@ -77,13 +78,18 @@ const FloatingContactButton: React.FC = () => {
           pointer-events: auto;
         }
 
-        .fab-item.whatsapp {
-          background: var(--color-tobacco, #b59e7d);
-          transition-delay: 0.06s;
+        .fab-item.location {
+          background: var(--color-sand, #cec1a8);
+          transition-delay: 0.12s;
         }
 
         .fab-item.instagram {
           background: var(--color-mountain, #aaa396);
+          transition-delay: 0.06s;
+        }
+
+        .fab-item.whatsapp {
+          background: var(--color-tobacco, #b59e7d);
           transition-delay: 0s;
         }
 
@@ -214,7 +220,21 @@ const FloatingContactButton: React.FC = () => {
       `}</style>
 
       <div className="fab-container">
-        {/* Instagram (aparece primero desde arriba cuando está abierto) */}
+        {/* Ubicación (aparece primero, arriba de todo, cuando está abierto) */}
+        <a
+          href={MAPS_URL}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Ubicación"
+          className={`fab-item location ${isOpen ? "open" : ""}`}
+          tabIndex={isOpen ? 0 : -1}
+        >
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M12 2c-4.42 0-8 3.58-8 8 0 5.5 8 12 8 12s8-6.5 8-12c0-4.42-3.58-8-8-8zm0 10.8a2.8 2.8 0 1 1 0-5.6 2.8 2.8 0 0 1 0 5.6z" />
+          </svg>
+        </a>
+
+        {/* Instagram */}
         <a
           href={INSTAGRAM_URL}
           target="_blank"

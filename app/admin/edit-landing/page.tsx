@@ -11,7 +11,6 @@ import {
 import {
   getLandingDraft,
   updateHero,
-  updateFeaturedProducts,
   updateSection,
   deleteSection,
   saveLandingSections,
@@ -113,7 +112,6 @@ export default function LandingEditor() {
   const [editingPositionsSection, setEditingPositionsSection] = useState<string | null>(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showFullPreview, setShowFullPreview] = useState<boolean>(false);
-  const featuredScrollRef = useRef<HTMLDivElement | null>(null);
 
   // ============================
   // GOOGLE MAPS REVIEWS (Hero y comentarios seleccionados)
@@ -274,28 +272,14 @@ export default function LandingEditor() {
         setProductos(prods ?? []);
         setAllProductos(prods ?? []);
 
-        // Resolver productos destacados desde inventario + orden guardado en landing.
-        // 1) Solo productos con destacado=true
-        // 2) Respetar el orden guardado en landing
-        // 3) Agregar al final los nuevos destacados aún no ordenados
+        // Obtener productos recientes: todos los productos, ordenados por createdAt (más nuevo primero), top 8
         const allProds = prods ?? [];
-        const highlighted = allProds.filter((p: any) => Boolean(p?.destacado));
-        const highlightedById = new Map(
-          highlighted
-            .filter((p: any) => p?.id)
-            .map((p: any) => [String(p.id), p])
-        );
+        const recentProducts = allProds
+          .filter((p: any) => p?.id)
+          .sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0))
+          .slice(0, 8);
 
-        const savedFeaturedIds: string[] = landingData?.featuredProducts || [];
-        const orderedFromSaved: any[] = savedFeaturedIds
-          .map((id) => highlightedById.get(String(id)))
-          .filter(Boolean);
-
-        const missingHighlighted = highlighted.filter(
-          (p: any) => !savedFeaturedIds.includes(String(p.id))
-        );
-
-        setFeaturedProducts([...orderedFromSaved, ...missingHighlighted]);
+        setFeaturedProducts(recentProducts);
 
         // Migramos secciones antiguas (no JSON) al nuevo formato en memoria
         const rawSections: any[] = landingData?.sections ?? [];
@@ -387,43 +371,7 @@ export default function LandingEditor() {
     alert("Hero actualizado");
   };
 
-  // Productos destacados ordenables (la selección se hace en Inventario)
-  const destacadosDisponibles = useMemo(
-    () => allProductos.filter((p) => p.destacado),
-    [allProductos]
-  );
-  const onDragEndFeatured = (result: DropResult) => {
-    if (!result.destination) return;
-    const updated = Array.from(featuredProducts);
-    const [removed] = updated.splice(result.source.index, 1);
-    updated.splice(result.destination.index, 0, removed);
-    setFeaturedProducts(updated);
-  };
 
-  // Sincroniza lista ordenable cuando cambian los destacados en inventario.
-  // Conserva el orden actual y agrega nuevos destacados al final.
-  useEffect(() => {
-    setFeaturedProducts((prev) => {
-      const availableById = new Map(
-        destacadosDisponibles
-          .filter((p: any) => p?.id)
-          .map((p: any) => [String(p.id), p])
-      );
-
-      const orderedCurrent = prev
-        .map((p: any) => availableById.get(String(p?.id || p)))
-        .filter(Boolean);
-
-      const currentIds = new Set(
-        orderedCurrent.map((p: any) => String(p.id))
-      );
-      const newOnes = destacadosDisponibles.filter(
-        (p: any) => !currentIds.has(String(p.id))
-      );
-
-      return [...orderedCurrent, ...newOnes];
-    });
-  }, [destacadosDisponibles]);
 
 
   const handleSectionPropChange = async (
@@ -997,12 +945,7 @@ export default function LandingEditor() {
     });
   };
 
-  const scrollFeaturedList = (direction: "left" | "right") => {
-    const container = featuredScrollRef.current;
-    if (!container) return;
-    const delta = direction === "left" ? -240 : 240;
-    container.scrollBy({ left: delta, behavior: "smooth" });
-  };
+
 
   const getResolvedHeroIndex = (sectionId: string, itemCount: number) => {
     if (!itemCount) return undefined;
@@ -1054,121 +997,8 @@ export default function LandingEditor() {
       buttonText: activeItem.buttonText ?? sectionProps.buttonText ?? "",
     };
   };
-        {/* ADMIN DESTACADOS */}
-        <div className="mb-10">
-          <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
-            <span className="material-icons-round text-purple-600">star</span>
-            Productos destacados en landing
-          </h2>
-          <p className="text-slate-600 dark:text-slate-300 mb-2 text-sm">La selección se hace en Inventario con el checkbox de destacado. Aquí solo defines el orden en que se mostrarán al publicar.</p>
-          <div className="flex flex-col md:flex-row gap-6">
-            {/* Lista de destacados actuales (drag & drop) */}
-            <div className="flex-1">
-              <h3 className="font-semibold mb-2 text-sm">Orden y publicaci+�n</h3>
-              {destacadosDisponibles.length === 0 ? (
-                <div className="rounded-lg border border-dashed border-slate-300 p-4 text-sm text-slate-500">
-                  Aún no hay productos marcados como destacados en inventario.
-                </div>
-              ) : null}
-              <DragDropContext onDragEnd={onDragEndFeatured}>
-                <div className="relative">
-                  {featuredProducts.length > 3 && (
-                    <>
-                      <button
-                        type="button"
-                        className="hidden md:flex items-center justify-center h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow absolute -left-3 top-1/2 -translate-y-1/2 hover:bg-slate-200 dark:hover:bg-slate-700"
-                        onClick={() => scrollFeaturedList("left")}
-                      >
-                        <span className="material-icons-round text-sm">chevron_left</span>
-                      </button>
-                      <button
-                        type="button"
-                        className="hidden md:flex items-center justify-center h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow absolute -right-3 top-1/2 -translate-y-1/2 hover:bg-slate-200 dark:hover:bg-slate-700"
-                        onClick={() => scrollFeaturedList("right")}
-                      >
-                        <span className="material-icons-round text-sm">chevron_right</span>
-                      </button>
-                    </>
-                  )}
 
-                  <Droppable droppableId="featured-droppable" direction="horizontal">
-                    {(provided: import('react-beautiful-dnd').DroppableProvided) => (
-                      <div
-                        ref={(el) => {
-                          featuredScrollRef.current = el;
-                          provided.innerRef(el);
-                        }}
-                        {...provided.droppableProps}
-                        className="flex items-stretch gap-3 overflow-x-auto pb-2 min-h-30"
-                      >
-                        {featuredProducts.map((prod, idx) => (
-                          <Draggable
-                            key={prod.id || prod}
-                            draggableId={String(prod.id || prod)}
-                            index={idx}
-                          >
-                            {(
-                              provided: import("react-beautiful-dnd").DraggableProvided,
-                              snapshot: import("react-beautiful-dnd").DraggableStateSnapshot
-                            ) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                className={`shrink-0 w-40 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-2 flex flex-col ${snapshot.isDragging ? "ring-2 ring-purple-400" : ""}`}
-                              >
-                                <div className="flex items-center justify-between mb-1">
-                                  <span
-                                    {...provided.dragHandleProps}
-                                    className="material-icons-round cursor-move select-none text-slate-400 text-sm"
-                                  >
-                                    drag_indicator
-                                  </span>
-                                  <button
-                                    className="text-xs px-2 py-0.5 bg-slate-300 text-slate-600 rounded cursor-not-allowed"
-                                    onClick={() => {}}
-                                    disabled
-                                  >
-                                    Inventario
-                                  </button>
-                                </div>
-                                <div className="transform scale-90 origin-top">
-                                  <ProductoCard
-                                    producto={prod}
-                                    showCart={false}
-                                    showEye={false}
-                                    onClick={() => {}}
-                                    onAddCart={() => {}}
-                                    onEye={() => {}}
-                                  />
-                                </div>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </div>
-              </DragDropContext>
-              <button
-                className="mt-4 px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800 font-bold"
-                disabled={saving}
-                onClick={async () => {
-                  setSaving(true);
-                  // Guardar solo los IDs de los productos destacados (borrador)
-                  await updateFeaturedProducts(
-                    featuredProducts.map((p) => p.id || p)
-                  );
-                  setSaving(false);
-                  alert("Productos destacados guardados en borrador");
-                }}
-              >
-                Guardar destacados (borrador)
-              </button>
-            </div>
-          </div>
-        </div>
+
 
   const handleSectionImage = async (
     e: ChangeEvent<HTMLInputElement>,
@@ -2194,16 +2024,13 @@ export default function LandingEditor() {
                                     <div className="mt-3 border border-dashed border-slate-200 rounded-md p-3 bg-slate-50 dark:bg-slate-900">
                                       <h4 className="text-xs font-semibold uppercase text-slate-500 mb-2 flex items-center gap-1">
                                         <span className="material-icons-round text-[14px] text-purple-500">
-                                          star
+                                          new_releases
                                         </span>
-                                        Productos destacados vinculados
+                                        Productos recientes
                                       </h4>
                                       {featuredProducts.length === 0 ? (
                                         <p className="text-[11px] text-slate-500">
-                                          No hay productos destacados configurados a+�n.
-                                          Marca productos como destacados en el inventario
-                                          y/o usa el panel "Productos destacados en landing"
-                                          de m+�s arriba para seleccionarlos.
+                                          No hay productos recientes disponibles.
                                         </p>
                                       ) : (
                                         <div className="flex items-stretch gap-3 overflow-x-auto pb-1">
@@ -2222,13 +2049,6 @@ export default function LandingEditor() {
                                                   onEye={() => {}}
                                                 />
                                               </div>
-                                              <button
-                                                type="button"
-                                                className="absolute top-1 right-1 px-1.5 py-0.5 rounded-full text-[10px] bg-slate-300 text-slate-600 opacity-80"
-                                                disabled
-                                              >
-                                                Inventario
-                                              </button>
                                             </div>
                                           ))}
                                         </div>
@@ -3406,12 +3226,8 @@ export default function LandingEditor() {
                 setSaving(true);
                 // Guardar secciones (borrador)
                 await saveLandingSections(sections);
-                // Guardar tambi+�n la configuraci+�n actual de productos destacados
-                await updateFeaturedProducts(
-                  featuredProducts.map((p) => p.id || p)
-                );
                 setSaving(false);
-                alert("Secciones y productos destacados guardados como borrador");
+                alert("Secciones guardadas como borrador");
               }}
               className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 disabled:opacity-60"
               disabled={saving}
@@ -3428,14 +3244,9 @@ export default function LandingEditor() {
             <button
               onClick={async () => {
                 setSaving(true);
-                // Aseguramos que la configuraci+�n actual de destacados
-                // se copie primero a draft y luego a published
-                await updateFeaturedProducts(
-                  featuredProducts.map((p) => p.id || p)
-                );
                 await publishLanding();
                 setSaving(false);
-                alert("Landing publicada (hero, destacados y secciones)");
+                alert("Landing publicada (hero y secciones)");
               }}
               className="bg-purple-700 text-white px-4 py-2 rounded flex items-center gap-2 disabled:opacity-60"
               disabled={saving}

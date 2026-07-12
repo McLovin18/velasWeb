@@ -16,6 +16,7 @@ import Hero360Section, { Hero360SectionProps } from "./sections/Hero360Section";
 import GoogleCommentsSection, { GoogleCommentsSectionProps } from "./sections/GoogleCommentsSection";
 import VideoSection, { VideoSectionProps } from "./sections/VideoSection";
 import QuickProductsSection, { QuickProductsSectionProps } from "./sections/QuickProductsSection";
+import TitleSubtitleSection, { TitleSubtitleSectionProps } from "./sections/TitleSubtitleSection";
 
 // Definición de props para cada sección
 export type SectionComponentProps = {
@@ -40,6 +41,7 @@ export const sectionRegistry: Record<string, ComponentType<any>> = {
   gallery: GallerySection,
   featuredProducts: FeaturedProductsSection,
   featuredCategories: FeaturedCategoriesSection,
+  titleSubtitle: TitleSubtitleSection,
 };
 
 // Eliminado fragmento duplicado

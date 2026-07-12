@@ -14,7 +14,7 @@
   /* --- Colores base de la paleta (para uso directo si se necesita) --- */
   --color-tobacco: #b59e7d;
   --color-mahogany: #584738;
-  --color-vanilla: #f1eada;
+  --color-vanilla: #f0ede4;
   --color-mountain: #aaa396;
   --color-sand: #cec1a8;
 
@@ -55,16 +55,19 @@
 
   --galleryImgBg: var(--color-sand);
 
-  /* --- Tipografía (sin cambios) --- */
-  --font-body-family: Georgia, serif;
+  /* --- Tipografía (Yuyu por defecto, excepto navbar) --- */
+  --font-body-family: Yuyu, Georgia, serif;
   --font-body-style: normal;
   --font-body-weight: 400;
   --font-body-weight-bold: 700;
-  --font-heading-family: var(--font-source-serif-4), "Source Serif 4", serif;
+  --font-heading-family: Yuyu, Georgia, serif;
   --font-heading-style: normal;
   --font-heading-weight: 400;
   --font-body-scale: 1.0;
   --font-heading-scale: 1.35;
+  /* --- Tipografía original para navbar --- */
+  --font-navbar-body-family: Georgia, serif;
+  --font-navbar-heading-family: var(--font-source-serif-4), "Source Serif 4", serif;
 }
 
 @theme inline {
@@ -119,6 +122,21 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+/* Mantener la tipografía original en el navbar y todos sus elementos internos */
+nav, nav * {
+  font-family: var(--font-navbar-body-family);
+}
+
+nav .font-heading,
+nav h1,
+nav h2,
+nav h3,
+nav h4,
+nav h5,
+nav h6 {
+  font-family: var(--font-navbar-heading-family);
 }
 
 /* Animación 3D de rotación para skeletons */

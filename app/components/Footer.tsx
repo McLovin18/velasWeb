@@ -18,9 +18,26 @@ const IconFacebook = () => (
   </svg>
 );
 
+const IconWhatsApp = () => (
+  <svg viewBox="0 0 32 32" width="15" height="15" fill="currentColor">
+    <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" />
+  </svg>
+);
+
+const IconLocation = () => (
+  <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+    <path d="M12 2c-4.42 0-8 3.58-8 8 0 5.5 8 12 8 12s8-6.5 8-12c0-4.42-3.58-8-8-8zm0 10.8a2.8 2.8 0 1 1 0-5.6 2.8 2.8 0 0 1 0 5.6z" />
+  </svg>
+);
+
 const socialLinks = [
   { href: "https://www.instagram.com/juliana.basics/", label: "Instagram", Icon: IconInstagram },
 ];
+
+// 👉 Reemplaza estos 3 valores con la información real del negocio
+const WHATSAPP_NUMBER = "593988705890"; // solo números, con código de país, sin '+' ni espacios
+const WHATSAPP_DISPLAY = "+593 98 870 5890"; // como se muestra al usuario
+const MAPS_URL = "https://l.instagram.com/?u=https%3A%2F%2Fmaps.app.goo.gl%2FB4LVAYLxvMuwXsuE9%3Fg_st%3Dic%26utm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio%26fbclid%3DPAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPOTM2NjE5NzQzMzkyNDU5AAGn_oqrYzsBMtPRc2N2aptDbGXg-iG5-VFhRCD6m4VnleH_jHY5zLezUdJza74_aem_B3z_UlltnRGnSSLfWrFf4w&e=AUD8pWkXfdA34eOteUrOjVR1HPRDj6F7-to54sCO4vLiuhm1_Mlp2-GkL3MlI46kCH00PHVdOMrM-W9V32NSvMywrrydKa5uKx-XFxb_vRVGZuWMIZrLC9G1j6ofwMn3GLJ2er0"; // enlace real de Google Maps
 
 const Footer: React.FC = () => {
   const pathname = usePathname();
@@ -36,19 +53,64 @@ const Footer: React.FC = () => {
 
         {/* Main row */}
         <div className={styles.ftMain}>
-          <div className="flex flex-col gap-8 items-center">
+          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
 
-            {/* Redes sociales */}
+            {/* Columna 1: Información de la tienda */}
+            <div className="flex flex-col items-center md:items-start text-center md:text-left gap-1">
+              <span className="text-base font-bold tracking-wide text-[var(--text)]">
+                Juliana Basics
+              </span>
+              <span className="text-xs text-[var(--textSecondary)]">
+                Moda &amp; Outfits
+              </span>
+              <p className="text-xs text-[var(--textSecondary)] mt-1 max-w-[220px]">
+                Encuentra las últimas tendencias en ropa y accesorios, pensadas para cada estilo.
+              </p>
+            </div>
+
+            {/* Columna 2: Redes sociales */}
             <div className="w-full flex justify-center">
               <ul className={styles.ftSocials}>
                 {socialLinks.map(({ href, label, Icon }) => (
                   <li key={label}>
-                    <a href={href} className={styles.ftSocialsLink} target="_blank" rel="noreferrer" title={label} onClick={() => trackLinkClick().catch(console.error)}>
+                    <a
+                      href={href}
+                      className={styles.ftSocialsLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      title={label}
+                      onClick={() => trackLinkClick().catch(console.error)}
+                    >
                       <Icon />
                     </a>
                   </li>
                 ))}
               </ul>
+            </div>
+
+            {/* Columna 3: Información de contacto */}
+            <div className="flex flex-col items-center md:items-end gap-2.5">
+              <a
+                href={`https://wa.me/${WHATSAPP_NUMBER}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 text-xs text-[var(--textSecondary)] hover:text-white transition-colors"
+                onClick={() => trackLinkClick().catch(console.error)}
+              >
+                <IconWhatsApp />
+                <span>{WHATSAPP_DISPLAY}</span>
+              </a>
+
+              <a
+                href={MAPS_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 text-xs text-[var(--textSecondary)] hover:text-white transition-colors"
+                onClick={() => trackLinkClick().catch(console.error)}
+              >
+                <IconLocation />
+                <span>ɢʏᴇ - ᴀʟʙᴏʀᴀᴅᴀ 𝟪ᴠᴀ ᴇᴛᴀᴘᴀ</span>
+              </a>
             </div>
           </div>
         </div>

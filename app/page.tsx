@@ -30,24 +30,15 @@ export default function Home() {
           obtenerProductos(),
         ]);
 
-        const highlighted = (products || []).filter((p: any) => Boolean(p?.destacado));
-        const highlightedById = new Map(
-          highlighted
-            .filter((p: any) => p?.id)
-            .map((p: any) => [String(p.id), p])
-        );
-
-        const orderedIds = (data?.featuredProducts || []).map((id: any) => String(id));
-        const ordered = orderedIds
-          .map((id: string) => highlightedById.get(id))
-          .filter(Boolean);
-
-        const orderedSet = new Set(ordered.map((p: any) => String(p.id)));
-        const missing = highlighted.filter((p: any) => !orderedSet.has(String(p.id)));
+        // Get all products, sort by newest first, take top 8
+        const recentProducts = (products || [])
+          .filter((p: any) => p?.id)
+          .sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0))
+          .slice(0, 8);
 
         if (mounted) {
           setLanding(data);
-          setFeaturedProductsResolved([...ordered, ...missing]);
+          setFeaturedProductsResolved(recentProducts);
         }
       } catch (error) {
         console.error("Error cargando landing publicada:", error);

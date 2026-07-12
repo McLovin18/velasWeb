@@ -133,7 +133,7 @@ export default function GallerySection({
               hover:scale-110 active:scale-95
             "
             style={{
-              background: "var(--cardBg, #fff)",
+              background: "var(--card)",
               borderColor: "var(--border)",
               color: "var(--text)",
             }}
@@ -155,7 +155,7 @@ export default function GallerySection({
               hover:scale-110 active:scale-95
             "
             style={{
-              background: "var(--cardBg, #fff)",
+              background: "var(--card)",
               borderColor: "var(--border)",
               color: "var(--text)",
             }}
@@ -203,8 +203,8 @@ export default function GallerySection({
                   height: 8,
                   background:
                     i === currentIndex
-                      ? "var(--accent, #7c3aed)"
-                      : "var(--border, #e2e8f0)",
+                      ? "var(--accent, #AAA396)"
+                      : "var(--border, #CEC1A8)",
                 }}
               />
             ))}
@@ -243,7 +243,7 @@ function GalleryCard({
 
   return (
     <div
-      className="flex flex-col items-center group cursor-pointer"
+      className="flex flex-col items-center group cursor-pointer w-full max-w-[200px] sm:max-w-[320px] lg:max-w-[380px] mx-auto"
       style={{
         // Entrada escalonada por índice
         animation: `fadeUp 0.4s ease both`,
@@ -254,13 +254,14 @@ function GalleryCard({
     >
       {/* Imagen */}
       <div
-        className="w-full relative bg-white overflow-hidden rounded-2xl border transition-all duration-300"
+        className="w-full relative overflow-hidden border transition-all duration-300"
         style={{
           aspectRatio: "1 / 1",
-          borderColor: hovered ? "var(--accent, #7c3aed)" : "var(--border, #e2e8f0)",
+          background: "var(--card)",
+          borderColor: hovered ? "var(--accent, #AAA396)" : "var(--border, #CEC1A8)",
           boxShadow: hovered
-            ? "0 8px 32px 0 rgba(124,58,237,0.13)"
-            : "0 1px 4px 0 rgba(0,0,0,0.06)",
+            ? "0 8px 32px 0 rgba(88,71,56,0.18)"
+            : "0 1px 4px 0 rgba(88,71,56,0.08)",
           transform: hovered ? "translateY(-4px)" : "translateY(0)",
         }}
       >
@@ -268,7 +269,7 @@ function GalleryCard({
           <img
             src={item.image}
             alt={item.title || "Imagen"}
-            className="absolute inset-0 w-full h-full object-contain p-4 sm:p-5 lg:p-6 transition-transform duration-500"
+            className="absolute inset-0 w-full h-full object-contain p-2 sm:p-3 lg:p-4 transition-transform duration-500"
             style={{
               transform: hovered ? "scale(1.07)" : "scale(1)",
             }}
@@ -278,7 +279,7 @@ function GalleryCard({
           <div className="absolute inset-0 flex items-center justify-center">
             <span
               className="material-icons-round"
-              style={{ fontSize: 40, color: "var(--border, #cbd5e1)" }}
+              style={{ fontSize: 40, color: "var(--border, #CEC1A8)" }}
             >
               image
             </span>
@@ -287,11 +288,11 @@ function GalleryCard({
 
         {/* Shimmer overlay en hover */}
         <div
-          className="absolute inset-0 rounded-2xl transition-opacity duration-300 pointer-events-none"
+          className="absolute inset-0 transition-opacity duration-300 pointer-events-none"
           style={{
             opacity: hovered ? 1 : 0,
             background:
-              "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%)",
+              "linear-gradient(135deg, rgba(241,234,218,0.18) 0%, transparent 60%)",
           }}
         />
       </div>
@@ -302,7 +303,7 @@ function GalleryCard({
           className="mt-3 text-center text-xs sm:text-sm font-semibold leading-tight transition-colors duration-200 px-1"
           style={{
             ...(titleStyle || {}),
-            color: hovered ? "var(--accent, #7c3aed)" : (titleStyle?.color || "var(--text, #1e293b)"),
+            color: hovered ? "var(--accent, #AAA396)" : (titleStyle?.color || "var(--text, #584738)"),
           }}
         >
           {item.title}
