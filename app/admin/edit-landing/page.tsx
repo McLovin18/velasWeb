@@ -3383,6 +3383,7 @@ export default function LandingEditor() {
                             if (hasResponsiveStructure) {
                               return [k, (v as any)[previewDevice] || (v as any).desktop || {}];
                             }
+                            
                             return [k, v || {}];
                           })
                         );

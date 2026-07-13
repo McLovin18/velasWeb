@@ -345,10 +345,10 @@ export default function HeroSection({
     textAlign,
   };
 
-  const innerStyle: React.CSSProperties = { 
-    aspectRatio: "2400 / 1000", // Mantiene el aspect ratio sin saltos
-    overflow: "hidden",
-  };
+const innerStyle: React.CSSProperties = {
+  aspectRatio: isDesktop ? "2400 / 1000" : "1 / 1",
+  overflow: "hidden",
+};
 
   return (
     <section style={containerStyle} className="m-0">
