@@ -66,7 +66,7 @@ export default function TitleSubtitleSection({
       className="py-12"
     >
       <div
-        className="max-w-4xl mx-auto px-4 bg-gray-200"
+        className="max-w-4xl mx-auto px-4 bg-[#F7F7F7]"
         style={{ borderRadius }}
       >
         {title && (
