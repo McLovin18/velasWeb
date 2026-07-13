@@ -56,17 +56,17 @@
   --galleryImgBg: var(--color-sand);
 
   /* --- Tipografía (Yuyu por defecto, excepto navbar) --- */
-  --font-body-family: Yuyu, Georgia, serif;
+  --font-body-family: "Cormorant Garamond", Georgia, serif;
   --font-body-style: normal;
   --font-body-weight: 400;
   --font-body-weight-bold: 700;
-  --font-heading-family: Yuyu, Georgia, serif;
+  --font-heading-family: "Cormorant Garamond", Georgia, serif;
   --font-heading-style: normal;
   --font-heading-weight: 400;
   --font-body-scale: 1.0;
   --font-heading-scale: 1.35;
   /* --- Tipografía original para navbar --- */
-  --font-navbar-body-family: Georgia, serif;
+  --font-navbar-body-family: "Cormorant Garamond", serif;
   --font-navbar-heading-family: var(--font-source-serif-4), "Source Serif 4", serif;
 }
 
