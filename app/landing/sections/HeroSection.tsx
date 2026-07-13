@@ -345,10 +345,35 @@ export default function HeroSection({
     textAlign,
   };
 
+
+  const [screenType, setScreenType] = React.useState<"mobile" | "tablet" | "desktop">("desktop");
+
+
+
+React.useEffect(() => {
+  const update = () => {
+    const w = window.innerWidth;
+
+    if (w < 640) setScreenType("mobile");
+    else if (w < 1024) setScreenType("tablet");
+    else setScreenType("desktop");
+  };
+
+  update();
+  window.addEventListener("resize", update);
+  return () => window.removeEventListener("resize", update);
+}, []);
+
 const innerStyle: React.CSSProperties = {
-  aspectRatio: isDesktop ? "2400 / 1000" : "6 / 5",
+  aspectRatio:
+    screenType === "mobile"
+      ? "6 / 5"
+      : screenType === "tablet"
+      ? "11 / 9"
+      : "2400 / 1000",
   overflow: "hidden",
 };
+
 
   return (
     <section style={containerStyle} className="m-0">
