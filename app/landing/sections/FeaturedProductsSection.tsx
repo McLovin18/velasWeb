@@ -16,7 +16,7 @@ export type FeaturedProductsSectionProps = {
   device?: "mobile" | "desktop";
 };
 
-const MAX_PRODUCTS = 8;
+const MAX_PRODUCTS = 10;
 
 // Extrae la fecha de creación de un producto en milisegundos,
 // soportando Firestore Timestamp, Date, string ISO o number.
