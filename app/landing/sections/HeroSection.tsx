@@ -346,7 +346,7 @@ export default function HeroSection({
   };
 
 const innerStyle: React.CSSProperties = {
-  aspectRatio: isDesktop ? "2400 / 1000" : "1 / 1",
+  aspectRatio: isDesktop ? "2400 / 1000" : "6 / 5",
   overflow: "hidden",
 };
 
