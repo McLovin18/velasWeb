@@ -98,7 +98,7 @@ export default function GallerySection({
   return (
     <section
       style={{ paddingTop, paddingBottom }}
-      className="w-full px-4 sm:px-6 lg:px-8 py-3 flex flex-col items-center m-0"
+      className="w-full py-3 flex flex-col items-center m-0"
     >
       {/* ── Título ── */}
       {title && (
@@ -243,7 +243,7 @@ function GalleryCard({
 
   return (
     <div
-      className="flex flex-col items-center group cursor-pointer w-full max-w-[350px] sm:max-w-[480px] lg:max-w-[480px] mx-auto"
+      className="flex flex-col items-center group cursor-pointer w-full max-w-full sm:max-w-[550px] lg:max-w-[550px] mx-auto"
       style={{
         // Entrada escalonada por índice
         animation: `fadeUp 0.4s ease both`,
@@ -254,7 +254,7 @@ function GalleryCard({
     >
       {/* Imagen */}
       <div
-        className="w-full relative overflow-hidden border transition-all duration-300"
+        className="w-full relative overflow-hidden  transition-all duration-300"
         style={{
           aspectRatio: "1 / 1",
           background: "var(--card)",
@@ -269,7 +269,7 @@ function GalleryCard({
           <img
             src={item.image}
             alt={item.title || "Imagen"}
-            className="absolute inset-0 w-full h-full object-contain p-2 sm:p-3 lg:p-4 transition-transform duration-500"
+            className="absolute inset-0 w-full h-full object-contain transition-transform duration-500"
             style={{
               transform: hovered ? "scale(1.07)" : "scale(1)",
             }}
