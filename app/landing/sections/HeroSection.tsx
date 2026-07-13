@@ -346,7 +346,6 @@ export default function HeroSection({
   };
 
   const innerStyle: React.CSSProperties = { 
-    borderRadius,
     aspectRatio: "2400 / 1000", // Mantiene el aspect ratio sin saltos
     overflow: "hidden",
   };
@@ -370,7 +369,7 @@ export default function HeroSection({
           loading="eager"
           decoding="async"
           className="w-full h-full object-cover block"
-          style={{ borderRadius, display: "block" }}
+          style={{display: "block" }}
           draggable={false}
         />
 
