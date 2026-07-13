@@ -243,7 +243,7 @@ function GalleryCard({
 
   return (
     <div
-      className="flex flex-col items-center group cursor-pointer w-full max-w-[200px] sm:max-w-[320px] lg:max-w-[380px] mx-auto"
+      className="flex flex-col items-center group cursor-pointer w-full max-w-[350px] sm:max-w-[480px] lg:max-w-[480px] mx-auto"
       style={{
         // Entrada escalonada por índice
         animation: `fadeUp 0.4s ease both`,

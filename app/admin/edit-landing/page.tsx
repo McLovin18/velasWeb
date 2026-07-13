@@ -277,7 +277,7 @@ export default function LandingEditor() {
         const recentProducts = allProds
           .filter((p: any) => p?.id)
           .sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0))
-          .slice(0, 8);
+          .slice(0, 10);
 
         setFeaturedProducts(recentProducts);
 
