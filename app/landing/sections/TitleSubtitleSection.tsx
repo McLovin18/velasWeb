@@ -63,7 +63,7 @@ export default function TitleSubtitleSection({
         paddingTop,
         paddingBottom,
       }}
-      className="py-12"
+      className="py-12 bg-[#F0F0F0]"
     >
       <div
         className="max-w-4xl mx-auto px-4 bg-[#F0F0F0]"
