@@ -1,4 +1,4 @@
-"use client";
+"use "client";
 
 import React, { useState } from "react";
 
@@ -7,15 +7,23 @@ import React, { useState } from "react";
  * - Círculo principal con animación de salto suave (llama la atención).
  * - Al hacer click despliega hacia arriba los íconos de contacto (Ubicación, Instagram, WhatsApp).
  * - Al volver a hacer click, se ocultan.
+ * - Al hacer hover/click sobre WhatsApp, se despliegan a un lado 2 contactos (Asesora 1 y Asesora 2).
  * - Colores tomados de la paleta del proyecto (mahogany, tobacco, mountain, sand, vanilla).
  */
 
-const WHATSAPP_URL = "https://wa.me/593988705890";
+const WHATSAPP_URL_1 = "https://wa.me/593988705890"; // 👉 Asesora 1
+const WHATSAPP_URL_2 = "https://wa.me/593000000000"; // 👉 Asesora 2 — reemplaza por el número real
 const INSTAGRAM_URL = "https://www.instagram.com/juliana.basics/";
 const MAPS_URL = "https://l.instagram.com/?u=https%3A%2F%2Fmaps.app.goo.gl%2FB4LVAYLxvMuwXsuE9%3Fg_st%3Dic%26utm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio%26fbclid%3DPAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPOTM2NjE5NzQzMzkyNDU5AAGn_oqrYzsBMtPRc2N2aptDbGXg-iG5-VFhRCD6m4VnleH_jHY5zLezUdJza74_aem_B3z_UlltnRGnSSLfWrFf4w&e=AUD8pWkXfdA34eOteUrOjVR1HPRDj6F7-to54sCO4vLiuhm1_Mlp2-GkL3MlI46kCH00PHVdOMrM-W9V32NSvMywrrydKa5uKx-XFxb_vRVGZuWMIZrLC9G1j6ofwMn3GLJ2er0"; // 👉 reemplaza por el enlace real de Google Maps
 
 const FloatingContactButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isWhatsappOpen, setIsWhatsappOpen] = useState(false);
+
+  const closeAll = () => {
+    setIsOpen(false);
+    setIsWhatsappOpen(false);
+  };
 
   return (
     <>
@@ -91,6 +99,98 @@ const FloatingContactButton: React.FC = () => {
         .fab-item.whatsapp {
           background: var(--color-tobacco, #b59e7d);
           transition-delay: 0s;
+          position: relative;
+          z-index: 2;
+        }
+
+        /* --- Wrapper de WhatsApp (contiene el botón + submenú lateral) --- */
+        .fab-whatsapp-wrap {
+          position: relative;
+        }
+
+        /* --- Submenú lateral de WhatsApp (2 asesoras, apiladas verticalmente) --- */
+        .fab-whatsapp-sub {
+          position: absolute;
+          right: calc(100% + 12px);
+          top: 50%;
+          transform: translateY(-50%);
+          display: flex;
+          flex-direction: column;
+          gap: 0.6rem;
+          z-index: 1;
+        }
+
+        .fab-sub-item {
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          background: var(--color-tobacco, #b59e7d);
+          box-shadow: 0 4px 14px rgba(88, 71, 56, 0.28);
+          opacity: 0;
+          transform: translateX(10px) scale(0.8);
+          pointer-events: none;
+          transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.22s ease;
+          position: relative;
+        }
+
+        @media (min-width: 768px) {
+          .fab-sub-item {
+            width: 46px;
+            height: 46px;
+          }
+        }
+
+        .fab-sub-item svg {
+          width: 21px;
+          height: 21px;
+          fill: var(--color-vanilla, #f1eada);
+        }
+
+        .fab-sub-item:hover {
+          transform: translateX(0) scale(1.08) !important;
+          box-shadow: 0 6px 20px rgba(88, 71, 56, 0.38);
+        }
+
+        .fab-sub-item.open {
+          opacity: 1;
+          transform: translateX(0) scale(1);
+          pointer-events: auto;
+        }
+
+        .fab-sub-item:nth-child(1) {
+          transition-delay: 0s;
+        }
+
+        .fab-sub-item:nth-child(2) {
+          transition-delay: 0.05s;
+        }
+
+        /* Etiqueta con el nombre de la asesora */
+        .fab-sub-label {
+          position: absolute;
+          right: calc(100% + 10px);
+          top: 50%;
+          transform: translateY(-50%);
+          background: var(--color-mahogany, #584738);
+          color: var(--color-vanilla, #f1eada);
+          font-family: var(--font-body-family);
+          font-size: 11.5px;
+          font-style: var(--font-body-style);
+          font-weight: var(--font-body-weight);
+          padding: 5px 10px;
+          border-radius: 7px;
+          white-space: nowrap;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.18s ease;
+        }
+
+        .fab-sub-item:hover .fab-sub-label {
+          opacity: 1;
         }
 
         /* --- Botón principal (timbre) --- */
@@ -248,19 +348,60 @@ const FloatingContactButton: React.FC = () => {
           </svg>
         </a>
 
-        {/* WhatsApp */}
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noreferrer"
-          aria-label="WhatsApp"
-          className={`fab-item whatsapp ${isOpen ? "open" : ""}`}
-          tabIndex={isOpen ? 0 : -1}
+        {/* WhatsApp + submenú de 2 asesoras */}
+        <div
+          className="fab-whatsapp-wrap"
+          onMouseEnter={() => isOpen && setIsWhatsappOpen(true)}
+          onMouseLeave={() => setIsWhatsappOpen(false)}
         >
-          <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" />
-          </svg>
-        </a>
+          {/* Submenú lateral: Asesora 1 y Asesora 2, apiladas verticalmente */}
+          <div className="fab-whatsapp-sub">
+            <a
+              href={WHATSAPP_URL_1}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="WhatsApp Asesora 1"
+              className={`fab-sub-item ${isOpen && isWhatsappOpen ? "open" : ""}`}
+              tabIndex={isOpen && isWhatsappOpen ? 0 : -1}
+            >
+              <span className="fab-sub-label">Asesora 1</span>
+              <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" />
+              </svg>
+            </a>
+
+            <a
+              href={WHATSAPP_URL_2}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="WhatsApp Asesora 2"
+              className={`fab-sub-item ${isOpen && isWhatsappOpen ? "open" : ""}`}
+              tabIndex={isOpen && isWhatsappOpen ? 0 : -1}
+            >
+              <span className="fab-sub-label">Asesora 2</span>
+              <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" />
+              </svg>
+            </a>
+          </div>
+
+          {/* Botón principal de WhatsApp */}
+          <button
+            type="button"
+            aria-label="Contactar por WhatsApp"
+            aria-expanded={isOpen && isWhatsappOpen}
+            className={`fab-item whatsapp ${isOpen ? "open" : ""}`}
+            tabIndex={isOpen ? 0 : -1}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isOpen) setIsWhatsappOpen((prev) => !prev);
+            }}
+          >
+            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" />
+            </svg>
+          </button>
+        </div>
 
         {/* Botón principal (timbre) */}
         <div className="fab-main-wrap">
@@ -273,7 +414,13 @@ const FloatingContactButton: React.FC = () => {
             aria-label={isOpen ? "Cerrar menú de contacto" : "Abrir menú de contacto"}
             aria-expanded={isOpen}
             className={`fab-main ${isOpen ? "open" : ""}`}
-            onClick={() => setIsOpen((prev) => !prev)}
+            onClick={() => {
+              if (isOpen) {
+                closeAll();
+              } else {
+                setIsOpen(true);
+              }
+            }}
           >
             {/* Ícono de burbuja de chat (contáctanos) */}
             <svg
