@@ -12,7 +12,7 @@ import React, { useState } from "react";
  */
 
 const WHATSAPP_URL_1 = "https://wa.me/593988705890"; // 👉 Asesora 1
-const WHATSAPP_URL_2 = "https://wa.me/593000000000"; // 👉 Asesora 2 — reemplaza por el número real
+const WHATSAPP_URL_2 = "https://wa.me/593987203233"; // 👉 Asesora 2 — reemplaza por el número real
 const INSTAGRAM_URL = "https://www.instagram.com/juliana.basics/";
 const MAPS_URL = "https://l.instagram.com/?u=https%3A%2F%2Fmaps.app.goo.gl%2FB4LVAYLxvMuwXsuE9%3Fg_st%3Dic%26utm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio%26fbclid%3DPAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPOTM2NjE5NzQzMzkyNDU5AAGn_oqrYzsBMtPRc2N2aptDbGXg-iG5-VFhRCD6m4VnleH_jHY5zLezUdJza74_aem_B3z_UlltnRGnSSLfWrFf4w&e=AUD8pWkXfdA34eOteUrOjVR1HPRDj6F7-to54sCO4vLiuhm1_Mlp2-GkL3MlI46kCH00PHVdOMrM-W9V32NSvMywrrydKa5uKx-XFxb_vRVGZuWMIZrLC9G1j6ofwMn3GLJ2er0"; // 👉 reemplaza por el enlace real de Google Maps
 
