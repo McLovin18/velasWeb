@@ -20,7 +20,7 @@ const FAQ_DATA: FaqItem[] = [
     answers: [
       "Realizamos envíos a todo Ecuador, a provincias, por medio de Servientrega.",
       "Dentro de Guayaquil el envío se realiza con motorizado; el valor de envío se calcula según el punto en donde se ubique.",
-      "El envío es gratis dentro de Guayaquil siempre y cuando sea un monto máximo de $50.",
+      "El envío es gratis dentro de Guayaquil siempre y cuando sea un monto minimo de $50.",
     ],
   },
   {
