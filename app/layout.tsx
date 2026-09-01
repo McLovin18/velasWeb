@@ -15,7 +15,7 @@ import { Source_Serif_4 } from "next/font/google";
 // Optimiza regeneración de página principal y otros contenidos estáticos
 export const revalidate = 1800;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://julianabasics.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://julianabasics.com.ec";
 const SITE_NAME = "Juliana Basics";
 const sourceSerif4 = Source_Serif_4({
   subsets: ["latin"],
