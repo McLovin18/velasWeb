@@ -37,11 +37,24 @@ const cardStyles = `
     cursor: pointer;
     border: 1px solid var(--border);
     transition: border-color 0.25s, box-shadow 0.25s;
+    /* Optimización para iOS Safari */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
 
   .pc-card:hover {
     border-color: var(--secondary);
     box-shadow: 0 8px 40px color-mix(in srgb, var(--primary) 14%, transparent);
+  }
+
+  /* Desactivar hover en dispositivos táctiles para mejorar rendimiento */
+  @media (hover: none) {
+    .pc-card:hover {
+      border-color: var(--border);
+      box-shadow: none;
+    }
   }
 
   /* ── imagen ── */
@@ -524,11 +537,4 @@ function ProductoCard({
   );
 }
 
-export default React.memo(ProductoCard, (prevProps, nextProps) => {
-  return (
-    prevProps.producto.id === nextProps.producto.id &&
-    prevProps.showCart === nextProps.showCart &&
-    prevProps.showEye === nextProps.showEye &&
-    prevProps.showFav === nextProps.showFav
-  );
-});
+export default React.memo(ProductoCard);

@@ -180,14 +180,20 @@ export const Navbar = () => {
   useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
-    obtenerProductos().then((prods) => setAllProducts(prods));
+    // Solo cargar productos para búsqueda en desktop para mejorar rendimiento en móvil
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      obtenerProductos().then((prods) => setAllProducts(prods));
+    }
   }, []);
 
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, "categorias"), (snap) => {
-      setCategorias(sortCategoriasByOrder(mapCategorySnapshot(snap.docs)));
-    });
-    return () => unsub();
+    // Solo suscribirse a categorías en desktop para mejorar rendimiento en móvil
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      const unsub = onSnapshot(collection(db, "categorias"), (snap) => {
+        setCategorias(sortCategoriasByOrder(mapCategorySnapshot(snap.docs)));
+      });
+      return () => unsub();
+    }
   }, []);
 
   useEffect(() => {

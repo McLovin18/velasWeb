@@ -182,3 +182,40 @@ nav h6 {
 .animate-loadingSteps {
   animation: loadingSteps 0.9s steps(4) infinite;
 }
+
+/* Optimizaciones específicas para iOS Safari */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hardware acceleration para elementos animados */
+img, .pc-card, button, a {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Optimizar scroll en iOS */
+body {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+}
+
+/* Reducir animaciones en dispositivos con preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Desactivar transiciones en hover para dispositivos táctiles */
+@media (hover: none) {
+  * {
+    transition: none !important;
+  }
+}

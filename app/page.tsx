@@ -157,18 +157,21 @@ const lastHeroIndex = useMemo(() => {
             style={{ aspectRatio: "2400 / 1000", minHeight: "300px", background: "var(--bgSecondary)" }}
         >
             <div className="absolute inset-0" style={{ background: "var(--bg)" }} />
+            {/* Animación simplificada para iOS Safari - usando opacity en lugar de position */}
             <div
             className="absolute inset-0"
             style={{
                 background: "linear-gradient(90deg, transparent 0%, rgba(252, 211, 77, 0.1) 50%, transparent 100%)",
-                animation: "shimmer 1.8s infinite",
+                animation: "shimmer 2.5s infinite",
                 backgroundSize: "200% 100%",
+                willChange: "opacity",
             }}
             />
             <style>{`
             @keyframes shimmer {
-                0% { background-position: -200% 0; }
-                100% { background-position: 200% 0; }
+                0% { opacity: 0.3; background-position: -200% 0; }
+                50% { opacity: 0.6; }
+                100% { opacity: 0.3; background-position: 200% 0; }
             }
             `}</style>
         </div>

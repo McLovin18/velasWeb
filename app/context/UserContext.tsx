@@ -65,7 +65,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
   // Guarda el uid anterior para detectar transición de invitado → logueado
   const prevUidRef = useRef<string | null>(null);
 
-  console.log('🔄 UserContext state:', { user, userLoading, cartLoading, cartReady, carritoLength: carrito.length });
+  // Solo log en desarrollo para evitar impacto en rendimiento en producción
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔄 UserContext state:', { user, userLoading, cartLoading, cartReady, carritoLength: carrito.length });
+  }
 
   // Load guest cart immediately on mount without waiting for auth
   useEffect(() => {
@@ -79,7 +82,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setCartReady(true);
       cartLoadedRef.current = true;
       console.log('✅ Cart ready and cartLoadedRef set to true');
-    }, 100);
+    }, 0); // Reducido de 100ms a 0ms para mejor rendimiento
   }, []);
 
   // Escuchar cambios en el token (incluye inicio de sesión y refresh de claims)

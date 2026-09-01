@@ -184,10 +184,19 @@ export default function HeroSection({
       return;
     }
 
-    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768); // md breakpoint
+    // Debounce resize para mejorar rendimiento en iOS
+    let timeoutId: NodeJS.Timeout;
+    const checkDesktop = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => setIsDesktop(window.innerWidth >= 768), 150);
+    };
+    
     checkDesktop();
     window.addEventListener("resize", checkDesktop);
-    return () => window.removeEventListener("resize", checkDesktop);
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener("resize", checkDesktop);
+    };
   }, [device]);
 
   const placeId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_PLACE_ID;
@@ -351,17 +360,24 @@ export default function HeroSection({
 
 
 React.useEffect(() => {
+  // Debounce resize para mejorar rendimiento en iOS
+  let timeoutId: NodeJS.Timeout;
   const update = () => {
-    const w = window.innerWidth;
-
-    if (w < 640) setScreenType("mobile");
-    else if (w < 1024) setScreenType("tablet");
-    else setScreenType("desktop");
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      const w = window.innerWidth;
+      if (w < 640) setScreenType("mobile");
+      else if (w < 1024) setScreenType("tablet");
+      else setScreenType("desktop");
+    }, 150);
   };
 
   update();
   window.addEventListener("resize", update);
-  return () => window.removeEventListener("resize", update);
+  return () => {
+    clearTimeout(timeoutId);
+    window.removeEventListener("resize", update);
+  };
 }, []);
 
 const innerStyle: React.CSSProperties = {
@@ -391,10 +407,10 @@ const innerStyle: React.CSSProperties = {
           alt={current.title || "Hero"}
           width={1920}
           height={840}
-          loading="eager"
+          loading="lazy"
           decoding="async"
           className="w-full h-full object-cover block"
-          style={{display: "block" }}
+          style={{display: "block", willChange: "transform"}}
           draggable={false}
         />
 
