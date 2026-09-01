@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { obtenerBodegas } from "../lib/bodegas-db";
 import { getSnapshotPricing } from "../lib/pricing";

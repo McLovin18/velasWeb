@@ -390,11 +390,7 @@ export default function ProductosPage() {
                   index={index}
                   showCart
                   showEye
-              
                   showFav={isAuthenticated}
-                  onClick={() => {}}
-                  onAddCart={() => {}}
-                  onEye={() => {}}
                   isCompact={false}
                 />
               ))}
