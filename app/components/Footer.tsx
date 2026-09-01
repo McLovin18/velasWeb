@@ -58,7 +58,7 @@ const Footer: React.FC = () => {
 
             {/* Columna 1: Información de la tienda */}
             <div className="flex flex-col items-center md:items-start text-center md:text-left gap-1">
-              <span className="text-base font-bold tracking-wide text-[var(--text)]">
+              <span className="text-base font-bold tracking-wide text-white">
                 Juliana Basics
               </span>
               <span className="text-xs text-[var(--textSecondary)]">
