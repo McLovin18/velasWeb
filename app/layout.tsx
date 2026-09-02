@@ -128,20 +128,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className={sourceSerif4.variable}>
       <head>
-        {/* Google Analytics gtag.js - insertado justo después de <head> */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-K1Q0MYDSKF"></script>
+        {/* Google Analytics gtag.js - solo cargar si no es WebView para mejor rendimiento */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-K1Q0MYDSKF');
+              // Detectar WebView para no cargar GA en navegadores in-app
+              if (!navigator.userAgent.includes('Instagram') && 
+                  !navigator.userAgent.includes('FBAN') && 
+                  !navigator.userAgent.includes('FBAV') &&
+                  !navigator.userAgent.includes('TikTok') &&
+                  !navigator.userAgent.includes('Twitter') &&
+                  !navigator.userAgent.includes('LinkedIn') &&
+                  !navigator.userAgent.includes('wv')) {
+                (function() {
+                  var script = document.createElement('script');
+                  script.async = true;
+                  script.src = 'https://www.googletagmanager.com/gtag/js?id=G-K1Q0MYDSKF';
+                  document.head.appendChild(script);
+                  script.onload = function() {
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', 'G-K1Q0MYDSKF');
+                  };
+                })();
+              }
             `,
           }}
         />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+        {/* Cargar solo los pesos de fuente necesarios para reducir carga en WebView */}
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
         
         <StructuredData />
       </head>

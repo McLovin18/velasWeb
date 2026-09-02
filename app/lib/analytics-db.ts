@@ -10,9 +10,14 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { getOrCreateDeviceId } from "./device-id-client";
+import { isWebViewOrLowPerformance } from "./webview-detect";
 
 const ANALYTICS_COLLECTION = "analytics";
 const API_TRACK_URL = "/api/analytics/track";
+
+// Cache para evitar tracking excesivo en WebViews
+let lastTrackTime = 0;
+const TRACK_COOLDOWN = isWebViewOrLowPerformance() ? 5000 : 1000; // 5s en WebView, 1s normal
 
 interface DailyAnalytics {
   date: string; // YYYY-MM-DD format
@@ -41,9 +46,18 @@ function getTodayDate(): string {
 /**
  * Track a page view by device-id (counts unique visitors)
  * Uses API endpoint for safety and permissions
+ * Optimized for WebViews with cooldown
  */
 export async function trackPageView(): Promise<void> {
   try {
+    // En WebViews, aplicar cooldown para evitar requests excesivos
+    const now = Date.now();
+    if (now - lastTrackTime < TRACK_COOLDOWN) {
+      console.log("[Analytics] Skipping track due to cooldown");
+      return;
+    }
+    lastTrackTime = now;
+
     const deviceId = getOrCreateDeviceId();
     console.log("[Analytics] Tracking page view for device:", deviceId);
     

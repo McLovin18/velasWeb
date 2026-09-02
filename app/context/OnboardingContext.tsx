@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useContext, useState } from "react";
+import { isWebViewOrLowPerformance } from "../lib/webview-detect";
 
 interface OnboardingContextType {
   showWelcomeGlobal: boolean;
@@ -9,7 +10,10 @@ interface OnboardingContextType {
 const OnboardingContext = createContext<OnboardingContextType | undefined>(undefined);
 
 export function OnboardingProvider({ children }: { children: React.ReactNode }) {
-  const [showWelcomeGlobal, setShowWelcomeGlobal] = useState(false);
+  // Desactivar onboarding en WebViews para mejorar rendimiento
+  const [showWelcomeGlobal, setShowWelcomeGlobal] = useState(
+    typeof window !== 'undefined' ? !isWebViewOrLowPerformance() : false
+  );
   return (
     <OnboardingContext.Provider value={{ showWelcomeGlobal, setShowWelcomeGlobal }}>
       {children}

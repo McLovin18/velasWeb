@@ -219,3 +219,17 @@ body {
     transition: none !important;
   }
 }
+
+/* Optimizaciones específicas para WebViews */
+@media (max-width: 480px) {
+  /* Reducir carga de imágenes en pantallas pequeñas */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+  
+  /* Desactivar efectos 3D pesados en WebViews */
+  .skeleton-3d {
+    animation: none;
+    opacity: 0.7;
+  }
+}

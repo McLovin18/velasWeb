@@ -13,6 +13,7 @@ import {
 import { obtenerProductos } from "../lib/productos-db";
 import { useUser } from "../context/UserContext";
 import { productMatches } from "../lib/search-utils";
+import { isWebViewOrLowPerformance } from "../lib/webview-detect";
 
 // ─────────────────────────────────────────────
 // Paleta de marca — Tienda Virtual
@@ -180,15 +181,15 @@ export const Navbar = () => {
   useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
-    // Solo cargar productos para búsqueda en desktop para mejorar rendimiento en móvil
-    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+    // Solo cargar productos para búsqueda en desktop y no en WebViews
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024 && !isWebViewOrLowPerformance()) {
       obtenerProductos().then((prods) => setAllProducts(prods));
     }
   }, []);
 
   useEffect(() => {
-    // Solo suscribirse a categorías en desktop para mejorar rendimiento en móvil
-    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+    // Solo suscribirse a categorías en desktop y no en WebViews
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024 && !isWebViewOrLowPerformance()) {
       const unsub = onSnapshot(collection(db, "categorias"), (snap) => {
         setCategorias(sortCategoriasByOrder(mapCategorySnapshot(snap.docs)));
       });
