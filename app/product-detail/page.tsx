@@ -7,7 +7,6 @@ import ProductoCard from "../components/ProductoCard";
 import RelatedProductsCarousel from "../components/RelatedProductsCarousel";
 import VariationsManager from "../components/VariationsManager";
 import React, { useState, useEffect } from "react";
-import { ProductReview } from "../lib/reviews-types";
 import { useUser } from "../context/UserContext";
 import { useToast } from "../context/ToastContext";
 import { useSearchParams } from "next/navigation";
@@ -22,16 +21,9 @@ export default function ProductDetailPage({ params }) {
   const [relacionados, setRelacionados] = useState([]);
   const [producto, setProducto] = useState(null);
   const [imgIdx, setImgIdx] = useState(0);
-  const [reviews, setReviews] = useState<ProductReview[]>([]);
-  const [reviewText, setReviewText] = useState("");
-  const [reviewRating, setReviewRating] = useState(0);
-  const [reviewLoading, setReviewLoading] = useState(false);
-  const [reviewError, setReviewError] = useState("");
-  const [reviewName, setReviewName] = useState("");
-  const [reviewEmail, setReviewEmail] = useState("");
   const [cantidad, setCantidad] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"caracteristicas" | "resenas" | null>("caracteristicas");
+  const [activeTab, setActiveTab] = useState<"caracteristicas" | null>("caracteristicas");
   const [selectedVariations, setSelectedVariations] = useState<Record<string, string>>({});
   const variationStorageKey = `product_variations_${producto?.id}`;
   const [currentStock, setCurrentStock] = useState(0);
@@ -106,39 +98,30 @@ export default function ProductDetailPage({ params }) {
       const prod = await obtenerProductoPorId(id);
       setProducto(prod);
       
-      // Cargar reviews y relacionados en paralelo después de tener el producto
+      // Cargar relacionados después de tener el producto
       if (prod) {
-        // Ejecutar reviews y relacionados en paralelo
-        Promise.all([
-          fetchReviews(id),
-          (async () => {
-            let rel = [];
-            console.log("[RELACIONADOS] subsubcategoria:", prod.subsubcategoria, "subcategoria:", prod.subcategoria, "categoria:", prod.categoria);
-            
-            // Intentar subsubcategoria primero
-            if (prod.subsubcategoria) {
-              rel = await obtenerProductosPorSubsubcategoria(prod.subsubcategoria, prod.id, 10);
-              console.log("[RELACIONADOS] encontrados por subsubcategoria:", rel);
-            }
-            
-            // Fallback a subcategoria si no hay resultados
-            if ((!rel || rel.length === 0) && prod.subcategoria) {
-              rel = await obtenerProductosPorSubcategoria(prod.subcategoria, prod.id, 10);
-              console.log("[RELACIONADOS] encontrados por subcategoria:", rel);
-            }
-            
-            // Fallback a categoria si aún no hay resultados
-            if ((!rel || rel.length === 0) && prod.categoria) {
-              rel = await obtenerProductosPorCategoria(prod.categoria, prod.id, 10);
-              console.log("[RELACIONADOS] encontrados por categoria:", rel);
-            }
-            
-            setRelacionados(rel);
-          })()
-        ]).catch(err => {
-          console.error("Error cargando datos adicionales:", err);
-          setRelacionados([]);
-        });
+        let rel = [];
+        console.log("[RELACIONADOS] subsubcategoria:", prod.subsubcategoria, "subcategoria:", prod.subcategoria, "categoria:", prod.categoria);
+        
+        // Intentar subsubcategoria primero
+        if (prod.subsubcategoria) {
+          rel = await obtenerProductosPorSubsubcategoria(prod.subsubcategoria, prod.id, 10);
+          console.log("[RELACIONADOS] encontrados por subsubcategoria:", rel);
+        }
+        
+        // Fallback a subcategoria si no hay resultados
+        if ((!rel || rel.length === 0) && prod.subcategoria) {
+          rel = await obtenerProductosPorSubcategoria(prod.subcategoria, prod.id, 10);
+          console.log("[RELACIONADOS] encontrados por subcategoria:", rel);
+        }
+        
+        // Fallback a categoria si aún no hay resultados
+        if ((!rel || rel.length === 0) && prod.categoria) {
+          rel = await obtenerProductosPorCategoria(prod.categoria, prod.id, 10);
+          console.log("[RELACIONADOS] encontrados por categoria:", rel);
+        }
+        
+        setRelacionados(rel);
       } else {
         setRelacionados([]);
       }
@@ -149,60 +132,7 @@ export default function ProductDetailPage({ params }) {
     // eslint-disable-next-line
   }, [params?.id, searchParams]);
 
-  useEffect(() => {
-    if (isLogged && user) {
-      setReviewName(user.displayName || "");
-      setReviewEmail(user.email || "");
-    }
-  }, [isLogged, user]);
 
-  async function fetchReviews(productId: string) {
-    try {
-      const res = await fetch(`/api/reviews?productId=${productId}`, { cache: 'no-store' });
-      if (res.ok) setReviews(await res.json());
-    } catch {}
-  }
-
-  async function handleSubmitReview(e: React.FormEvent) {
-    e.preventDefault();
-    setReviewLoading(true);
-    setReviewError("");
-    if (!reviewRating || !reviewText) {
-      setReviewError("Completa la calificación y el comentario");
-      setReviewLoading(false);
-      return;
-    }
-    if (!isLogged && (!reviewName || !reviewEmail)) {
-      setReviewError("Completa nombre y correo para publicar la reseña");
-      setReviewLoading(false);
-      return;
-    }
-    try {
-      const res = await fetch("/api/reviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId: producto.id,
-          userId: user?.uid || "",
-          userName: reviewName || user?.displayName || "Usuario",
-          userEmail: reviewEmail,
-          rating: reviewRating,
-          comment: reviewText,
-        }),
-      });
-      if (res.ok) {
-        setReviewText("");
-        setReviewRating(0);
-        if (!isLogged) { setReviewName(""); setReviewEmail(""); }
-        fetchReviews(producto.id);
-      } else {
-        setReviewError("Error al enviar reseña");
-      }
-    } catch {
-      setReviewError("Error de red");
-    }
-    setReviewLoading(false);
-  }
 
   // ── Loading skeleton ─────────────────────────────────────────────────────
   if (loading) {
@@ -280,10 +210,6 @@ export default function ProductDetailPage({ params }) {
     precio: basePrice,
   });
 
-  const avgRating = reviews.length > 0
-    ? reviews.reduce((a, b) => a + b.rating, 0) / reviews.length
-    : 0;
-
   const handleAddCart = () => {
     // Validar variaciones si el producto las tiene
     if (hasVariations && variationAttributeIds.length > 0) {
@@ -353,19 +279,9 @@ export default function ProductDetailPage({ params }) {
   const descItems = parseDesc((producto as any).descripcion || "");
   const rawDescripcion = (producto as any).descripcion || "";
 
-  const inputCls =
-    "w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/25 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-colors";
-
-  const reviewsProps = {
-    reviews, avgRating, reviewRating, setReviewRating,
-    reviewName, setReviewName, reviewEmail, setReviewEmail,
-    reviewText, setReviewText, reviewError, reviewLoading,
-    handleSubmitReview, isLogged, inputCls,
-  };
-
   const hasCaracteristicas = producto.caracteristicas?.length > 0;
 
-  const handleTabToggle = (tab: "caracteristicas" | "resenas") => {
+  const handleTabToggle = (tab: "caracteristicas") => {
     setActiveTab((prev) => (prev === tab ? null : tab));
   };
 
@@ -428,7 +344,7 @@ export default function ProductDetailPage({ params }) {
               </div>
             )}
 
-            {/* ── TABS: Características / Reseñas — solo desktop ───── */}
+            {/* ── TABS: Características — solo desktop ───── */}
             <div className="hidden md:flex mt-1 flex-col gap-0 py-18">
               {/* Botones tab */}
               <div className="flex rounded-xl overflow-hidden border border-slate-200 dark:border-white/[0.08]">
@@ -445,28 +361,6 @@ export default function ProductDetailPage({ params }) {
                     Características
                   </button>
                 )}
-                <button
-                  onClick={() => handleTabToggle("resenas")}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold transition-all ${
-                    hasCaracteristicas ? "border-l border-slate-200 dark:border-white/[0.08]" : ""
-                  } ${
-                    activeTab === "resenas"
-                            ? "bg-[var(--primary)] text-[var(--primaryForeground)]"
-                            : "bg-[var(--card)] text-[var(--text)] hover:bg-[var(--bgSecondary)]"
-                  }`}
-                >
-                  <span className="material-icons-round text-[16px]">star_outline</span>
-                  Reseñas
-                  {reviews.length > 0 && (
-                    <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
-                      activeTab === "resenas"
-                        ? "bg-white text-black"
-                        : "bg-slate-100 text-slate-600"
-                    }`}>
-                      {reviews.length}
-                    </span>
-                  )}
-                </button>
               </div>
 
               {/* Panel de contenido del tab activo */}
@@ -483,11 +377,6 @@ export default function ProductDetailPage({ params }) {
                         </li>
                       ))}
                     </ul>
-                  )}
-
-                  {/* Panel: Reseñas */}
-                  {activeTab === "resenas" && (
-                    <ReviewsSection {...reviewsProps} />
                   )}
 
                 </div>
@@ -513,18 +402,6 @@ export default function ProductDetailPage({ params }) {
                 SKU: {producto.sku || producto.id}
               </p>
             </div>
-
-            {/* Rating inline */}
-            {reviews.length > 0 && (
-              <div className="flex items-center gap-1.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={`text-base ${i < Math.round(avgRating) ? "text-yellow-400" : "text-slate-200 dark:text-white/10"}`}>★</span>
-                ))}
-                <span className="text-xs text-slate-400 dark:text-white/25 ml-1">
-                  {avgRating.toFixed(1)} ({reviews.length})
-                </span>
-              </div>
-            )}
 
             <div className="flex items-baseline gap-3 flex-wrap">
               {hasDiscount && (
@@ -763,28 +640,6 @@ export default function ProductDetailPage({ params }) {
                 Características
               </button>
             )}
-            <button
-              onClick={() => handleTabToggle("resenas")}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold transition-all ${
-                hasCaracteristicas ? "border-l border-slate-200 dark:border-white/[0.08]" : ""
-              } ${
-                activeTab === "resenas"
-                  ? "bg-black text-white"
-                  : "bg-white text-slate-600 hover:bg-slate-50"
-              }`}
-            >
-              <span className="material-icons-round text-[16px]">star_outline</span>
-              Reseñas
-              {reviews.length > 0 && (
-                <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
-                  activeTab === "resenas"
-                    ? "bg-white text-black"
-                    : "bg-slate-100 text-slate-600"
-                }`}>
-                  {reviews.length}
-                </span>
-              )}
-            </button>
           </div>
 
           {activeTab && (
@@ -799,9 +654,6 @@ export default function ProductDetailPage({ params }) {
                   ))}
                 </ul>
               )}
-              {activeTab === "resenas" && (
-                <ReviewsSection {...reviewsProps} />
-              )}
             </div>
           )}
         </div>
@@ -814,111 +666,3 @@ export default function ProductDetailPage({ params }) {
     </div>
   );
 }
-
-// ── Componente de reseñas ─────────────────────────────────────────────────────
-function ReviewsSection({
-  reviews, avgRating,
-  reviewRating, setReviewRating,
-  reviewName, setReviewName,
-  reviewEmail, setReviewEmail,
-  reviewText, setReviewText,
-  reviewError, reviewLoading,
-  handleSubmitReview, isLogged, inputCls,
-}: any) {
-  return (
-    <div className="space-y-6">
-      {/* Resumen */}
-      {reviews.length > 0 ? (
-        <div className="flex items-center gap-3">
-          <span className="text-4xl font-extrabold text-slate-800 dark:text-white leading-none">
-            {avgRating.toFixed(1)}
-          </span>
-          <div>
-            <div className="flex gap-0.5 mb-0.5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} className={`text-lg ${i < Math.round(avgRating) ? "text-yellow-400" : "text-slate-200 dark:text-white/10"}`}>★</span>
-              ))}
-            </div>
-            <p className="text-xs text-slate-400 dark:text-white/25">
-              {reviews.length} reseña{reviews.length !== 1 ? "s" : ""}
-            </p>
-          </div>
-        </div>
-      ) : (
-        <p className="text-sm text-black/80 dark:text-white/80">Sé el primero en dejar una reseña.</p>
-      )}
-
-      {/* Lista de reseñas */}
-      {reviews.length > 0 && (
-        <ul className="space-y-4">
-          {reviews.map((r: any) => (
-            <li key={r.id} className="pb-4 border-b border-slate-100 dark:border-white/[0.05]">
-              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                <span className="text-sm font-semibold text-slate-700 dark:text-white/75">{r.userName}</span>
-                <div className="flex gap-0.5">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <span key={i} className={`text-sm ${i < r.rating ? "text-yellow-400" : "text-slate-200 dark:text-white/10"}`}>★</span>
-                  ))}
-                </div>
-                <span className="text-xs text-slate-300 dark:text-white/20 ml-auto">
-                  {new Date(r.createdAt).toLocaleDateString("es-EC", { day: "2-digit", month: "short", year: "numeric" })}
-                </span>
-              </div>
-              <p className="text-sm text-slate-500 dark:text-white/45 leading-relaxed">{r.comment}</p>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {/* Formulario */}
-      <form onSubmit={handleSubmitReview} className="pt-2 space-y-4">
-        <p className="text-sm font-medium text-black/80 dark:text-white/80">Escribe una reseña</p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-black/75 dark:text-white/80">Nombre</label>
-            <input className={inputCls} placeholder="Tu nombre" value={reviewName}
-              onChange={(e) => setReviewName(e.target.value)} required={!isLogged} />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-black/75 dark:text-white/80">Correo</label>
-            <input className={inputCls} placeholder="tu@correo.com" type="email" value={reviewEmail}
-              onChange={(e) => setReviewEmail(e.target.value)} required={!isLogged} />
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs text-black/80 dark:text-white/80">Calificación</label>
-          <div className="flex gap-1">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <span key={i} onClick={() => setReviewRating(i + 1)} role="button"
-                aria-label={`Calificación ${i + 1}`}
-                className={`text-2xl cursor-pointer transition-transform hover:scale-110 select-none ${
-                  i < reviewRating ? "text-yellow-400" : "text-slate-200 dark:text-white/10"
-                }`}>★</span>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs text-black/80 dark:text-white/80">Comentario</label>
-          <textarea className={`${inputCls} resize-none`} rows={3}
-            placeholder="Cuéntanos tu experiencia..." value={reviewText}
-            onChange={(e) => setReviewText(e.target.value)} required />
-        </div>
-
-        {reviewError && (
-          <p className="text-xs text-red-500 dark:text-red-400">{reviewError}</p>
-        )}
-
-        <div className="flex items-center justify-between gap-4">
-          <button type="submit" disabled={reviewLoading}
-            className="px-6 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm font-bold hover:border-black/60 hover:text-black hover:shadow-sm disabled:opacity-40 transition-all">
-            {reviewLoading ? "Enviando..." : "Publicar reseña"}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-}
-
