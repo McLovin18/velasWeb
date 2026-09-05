@@ -56,17 +56,8 @@ if (!admin.apps.length) {
     db = admin.firestore();
     db.settings({ ignoreUndefinedProperties: true });
     
-    // Test the connection with a simple get
-    console.log("[Firebase Admin] 8. Testing Firestore connection...");
-    const testDoc = db.collection("ordenes").limit(1).get();
-    testDoc.then(() => {
-      console.log("[Firebase Admin] 9. ✅ Firestore connection test successful!");
-    }).catch((err) => {
-      console.error("[Firebase Admin] 9. ❌ Firestore connection test failed:", err);
-    });
-    
     adminAuth = admin.auth();
-    console.log("[Firebase Admin] 10. ✅ All instances ready!");
+    console.log("[Firebase Admin] 8. ✅ All instances ready!");
   } catch (err) {
     console.error("[Firebase Admin] ❌ Initialization error:", err);
     throw err;
