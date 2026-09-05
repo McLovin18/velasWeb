@@ -182,19 +182,38 @@ export const Navbar = () => {
 
   useEffect(() => {
     // Solo cargar productos para búsqueda en desktop y no en WebViews
-    if (typeof window !== 'undefined' && window.innerWidth >= 1024 && !isWebViewOrLowPerformance()) {
+    if (typeof window === 'undefined' || window.innerWidth < 1024 || isWebViewOrLowPerformance()) return;
+
+    const loadProducts = () => {
       obtenerProductos().then((prods) => setAllProducts(prods));
-    }
+    };
+    const idleId = window.requestIdleCallback?.(loadProducts, { timeout: 2500 });
+    const timeoutId = idleId === undefined ? window.setTimeout(loadProducts, 1200) : undefined;
+
+    return () => {
+      if (idleId !== undefined) window.cancelIdleCallback(idleId);
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
   }, []);
 
   useEffect(() => {
     // Solo suscribirse a categorías en desktop y no en WebViews
-    if (typeof window !== 'undefined' && window.innerWidth >= 1024 && !isWebViewOrLowPerformance()) {
-      const unsub = onSnapshot(collection(db, "categorias"), (snap) => {
+    if (typeof window === 'undefined' || window.innerWidth < 1024 || isWebViewOrLowPerformance()) return;
+
+    let unsubscribe: (() => void) | undefined;
+    const subscribeCategories = () => {
+      unsubscribe = onSnapshot(collection(db, "categorias"), (snap) => {
         setCategorias(sortCategoriasByOrder(mapCategorySnapshot(snap.docs)));
       });
-      return () => unsub();
-    }
+    };
+    const idleId = window.requestIdleCallback?.(subscribeCategories, { timeout: 2500 });
+    const timeoutId = idleId === undefined ? window.setTimeout(subscribeCategories, 1200) : undefined;
+
+    return () => {
+      unsubscribe?.();
+      if (idleId !== undefined) window.cancelIdleCallback(idleId);
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
   }, []);
 
   useEffect(() => {

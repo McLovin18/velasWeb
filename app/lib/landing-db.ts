@@ -59,7 +59,17 @@ export const DEFAULT_LANDING = {
 const getLandingByVersion = async (version: "draft" | "published") => {
   try {
     const landingRef = doc(db, "landingPage", "main");
-    const landingSnap = await getDoc(landingRef);
+    const sectionsCol = collection(
+      landingRef,
+      version === "draft" ? "sectionsDraft" : "sectionsPublished"
+    );
+    const [landingSnap, sectionsSnap] = await Promise.all([
+      getDoc(landingRef),
+      getDocs(sectionsCol).catch((err) => {
+        console.error("Error leyendo secciones de landing:", err);
+        return null;
+      }),
+    ]);
 
     let base: any | null = null;
     if (landingSnap.exists()) {
@@ -113,16 +123,8 @@ const getLandingByVersion = async (version: "draft" | "published") => {
 
     // Secciones desde subcolección + fallback al array legacy
     let sections: any[] = [];
-    try {
-      const colName =
-        version === "draft" ? "sectionsDraft" : "sectionsPublished";
-      const sectionsCol = collection(landingRef, colName);
-      const snap = await getDocs(sectionsCol);
-      if (!snap.empty) {
-        sections = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      }
-    } catch (err) {
-      console.error("Error leyendo secciones de landing:", err);
+    if (sectionsSnap && !sectionsSnap.empty) {
+      sections = sectionsSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
     }
 
     if (!sections.length) {

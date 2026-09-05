@@ -26,10 +26,14 @@ export default function Home() {
 
     const loadLanding = async () => {
       try {
-        const [data, products] = await Promise.all([
-          getLandingPage(),
-          obtenerProductos(),
-        ]);
+          const data = await getLandingPage();
+
+          if (mounted) {
+            setLanding(data);
+            setLoading(false);
+          }
+
+          const products = await obtenerProductos();
 
         // Get all products, sort by newest first, take top 8
         const recentProducts = (products || [])
@@ -38,13 +42,11 @@ export default function Home() {
           .slice(0, 10);
 
         if (mounted) {
-          setLanding(data);
           setFeaturedProductsResolved(recentProducts);
         }
       } catch (error) {
         console.error("Error cargando landing publicada:", error);
         if (mounted) {
-          setLanding(null);
           setFeaturedProductsResolved([]);
         }
       } finally {

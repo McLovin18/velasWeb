@@ -28,8 +28,8 @@ interface IdempotentOrderRequest {
 interface IdempotentOrderRecord {
   status: "processing" | "completed" | "failed";
   orderId?: string;
-  createdAt: Date;
-  completedAt?: Date;
+  createdAt: admin.firestore.Timestamp;
+  completedAt?: admin.firestore.Timestamp;
   error?: string;
 }
 
@@ -118,16 +118,6 @@ export async function preCheckIdempotentOrder(
       canProceed: false,
       lockId,
       error: `Idempotency check failed: ${err.message}`,
-    };
-  }
-    }
-
-    // Otro error
-    console.error("[idempotent-order] Unexpected error:", err);
-    return {
-      canProceed: false,
-      lockId,
-      error: err.message,
     };
   }
 }
