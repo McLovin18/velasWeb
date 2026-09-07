@@ -143,13 +143,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 (function() {
                   var script = document.createElement('script');
                   script.async = true;
-                  script.src = 'https://www.googletagmanager.com/gtag/js?id=G-K1Q0MYDSKF';
+                  script.src = 'https://www.googletagmanager.com/gtag/js?id=G-YMXXBX61YT';
                   document.head.appendChild(script);
                   script.onload = function() {
                     window.dataLayer = window.dataLayer || [];
                     function gtag(){dataLayer.push(arguments);}
                     gtag('js', new Date());
-                    gtag('config', 'G-K1Q0MYDSKF');
+                    gtag('config', 'G-YMXXBX61YT');
                   };
                 })();
               }
