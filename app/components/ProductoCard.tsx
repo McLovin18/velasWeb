@@ -323,7 +323,7 @@ function ProductoCard({
   showFav?: boolean;
   index?: number;
   isCompact?: boolean;
-} = {}): JSX.Element | null {
+} = {}): React.JSX.Element | null {
   if (!producto || !producto.id) return null;
 
   const {
@@ -428,7 +428,6 @@ function ProductoCard({
         href={detailUrl}
         className="pc-link"
         style={{
-          opacity: 0,
           animation: "pc-fadeIn 0.4s ease forwards",
           animationDelay: `${index * 80}ms`,
         }}
@@ -443,11 +442,16 @@ function ProductoCard({
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className="object-contain"
               style={{
-                opacity: 0,
+                opacity: 1,
                 transition: "opacity 0.4s ease",
               }}
-              onLoad={(e) => {
-                (e.currentTarget as HTMLImageElement).style.opacity = "1";
+              onError={(e) => {
+                const image = e.currentTarget as HTMLImageElement;
+                image.style.opacity = "1";
+                if (image.dataset.fallbackApplied !== "true") {
+                  image.dataset.fallbackApplied = "true";
+                  image.src = "/logoME.png";
+                }
               }}
               priority={index < 4}
               loading={index < 4 ? "eager" : "lazy"}
@@ -486,7 +490,7 @@ function ProductoCard({
             <div className="pc-prices">
               {hasDiscount && (
                 <span className="pc-price-old">
-                  ${fakeOldPrice.toFixed(2)}
+                  ${fakeOldPrice?.toFixed(2)}
                 </span>
               )}
               <span className="pc-price-final">

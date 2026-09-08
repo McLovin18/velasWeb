@@ -3,7 +3,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import ProductoCard from "../components/ProductoCard";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import type { Producto } from "../lib/productos-db";
-import { obtenerProductos } from "../lib/productos-db";
+import { productoTieneStockDisponible } from "../lib/productos-db";
 import {
   mapCategorySnapshot,
   sortCategoriasByOrder,
@@ -91,56 +91,25 @@ export default function ProductosPage() {
   }, [router]);
 
   useEffect(() => {
-    async function fetchProductos() {
-      setLoading(true);
-      try {
-        const all = await obtenerProductos();
-        let prods = all;
-
-        if (categoria && categorias.length > 0) {
-          prods = prods.filter((p) =>
-            productMatchesCategoria(p, categoria, categorias)
-          );
-          if (subcategoria) {
-            prods = prods.filter((p) =>
-              productMatchesSubcategoria(
-                p,
-                categoria,
-                subcategoria,
-                categorias
-              )
-            );
-          }
-          if (subsubcategoria) {
-            prods = prods.filter((p) =>
-              productMatchesSubsubcategoria(
-                p,
-                categoria,
-                subcategoria,
-                subsubcategoria,
-                categorias
-              )
-            );
-          }
-        } else if (categoria) {
-          const needle = categoria.trim().toLowerCase();
-          prods = all.filter(
-            (p) =>
-              String(p.categoria || "").trim().toLowerCase() === needle
-          );
-        }
-
-        setProductos(prods);
-      } catch (error) {
+    setLoading(true);
+    const unsubscribe = onSnapshot(
+      collection(db, "productos"),
+      (snapshot) => {
+        const allProducts = snapshot.docs
+          .map((doc) => ({ id: doc.id, ...doc.data() }) as Producto)
+          .filter(productoTieneStockDisponible);
+        setProductos(allProducts);
+        setLoading(false);
+      },
+      (error) => {
         console.error("Error cargando productos:", error);
         setProductos([]);
-      } finally {
         setLoading(false);
       }
-    }
+    );
 
-    fetchProductos();
-  }, [categoria, subcategoria, subsubcategoria, categorias]);
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const loggedIn = Boolean(localStorage.getItem("token"));

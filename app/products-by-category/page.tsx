@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 
-import { obtenerProductos } from "../lib/productos-db";
+import { productoTieneStockDisponible } from "../lib/productos-db";
 import {
   obtenerCategorias,
   mapCategorySnapshot,
@@ -144,56 +144,26 @@ export default function ProductsByCategoryPage() {
     router.replace("/products-by-category", { scroll: false });
   }, [router]);
 
-  // 2. Fetch productos (siempre catálogo completo + filtro por árbol de categorías)
+  // 2. Suscribirse al catálogo. El filtro de categoría se aplica localmente.
   useEffect(() => {
-    async function fetchProductos() {
-      setLoading(true);
-      try {
-        const all = await obtenerProductos();
-        let prods = all;
-
-        if (categoriaId && categorias.length > 0) {
-          prods = prods.filter((p) =>
-            productMatchesCategoria(p, categoriaId, categorias)
-          );
-          if (subcategoriaId) {
-            prods = prods.filter((p) =>
-              productMatchesSubcategoria(
-                p,
-                categoriaId,
-                subcategoriaId,
-                categorias
-              )
-            );
-          }
-          if (subsubcategoriaId) {
-            prods = prods.filter((p) =>
-              productMatchesSubsubcategoria(
-                p,
-                categoriaId,
-                subcategoriaId,
-                subsubcategoriaId,
-                categorias
-              )
-            );
-          }
-        } else if (categoriaId) {
-          const needle = categoriaId.trim().toLowerCase();
-          prods = all.filter(
-            (p) =>
-              String(p.categoria || "").trim().toLowerCase() === needle
-          );
-        }
-
-        setProductos(prods || []);
-      } catch {
+    setLoading(true);
+    const unsubscribe = onSnapshot(
+      collection(db, "productos"),
+      (snapshot) => {
+        const allProducts = snapshot.docs
+          .map((doc) => ({ id: doc.id, ...doc.data() }))
+          .filter(productoTieneStockDisponible);
+        setProductos(allProducts);
+        setLoading(false);
+      },
+      () => {
         setProductos([]);
-      } finally {
         setLoading(false);
       }
-    }
-    fetchProductos();
-  }, [categoriaId, subcategoriaId, subsubcategoriaId, categorias]);
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   // 2.5. Cargar categorías
   useEffect(() => {
