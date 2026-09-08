@@ -147,22 +147,35 @@ export default function ProductsByCategoryPage() {
   // 2. Suscribirse al catálogo. El filtro de categoría se aplica localmente.
   useEffect(() => {
     setLoading(true);
-    const unsubscribe = onSnapshot(
-      collection(db, "productos"),
-      (snapshot) => {
-        const allProducts = snapshot.docs
-          .map((doc) => ({ id: doc.id, ...doc.data() }))
-          .filter(productoTieneStockDisponible);
-        setProductos(allProducts);
-        setLoading(false);
-      },
-      () => {
-        setProductos([]);
-        setLoading(false);
-      }
-    );
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 12000);
 
-    return () => unsubscribe();
+    fetch("/api/catalog/products", { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`Catalog API: ${response.status}`);
+        return (await response.json()) as { products?: any[] };
+      })
+      .then((payload) => {
+        const allProducts = Array.isArray(payload.products)
+          ? payload.products.filter(productoTieneStockDisponible)
+          : [];
+        setProductos(allProducts);
+      })
+      .catch((error: unknown) => {
+        if ((error as { name?: string })?.name !== "AbortError") {
+          console.error("Error cargando productos:", error);
+          setProductos([]);
+        }
+      })
+      .finally(() => {
+        window.clearTimeout(timeoutId);
+        setLoading(false);
+      });
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, []);
 
   // 2.5. Cargar categorías
