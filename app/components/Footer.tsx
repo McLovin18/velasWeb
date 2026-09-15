@@ -38,8 +38,7 @@ const socialLinks = [
 // 👉 Reemplaza estos 3 valores con la información real del negocio
 const WHATSAPP_NUMBER = "593988705890"; // solo números, con código de país, sin '+' ni espacios
 const WHATSAPP_DISPLAY = "+593 98 870 5890"; // como se muestra al usuario
-const MAPS_URL = "https://l.instagram.com/?u=https%3A%2F%2Fmaps.app.goo.gl%2FB4LVAYLxvMuwXsuE9%3Fg_st%3Dic%26utm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio%26fbclid%3DPAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPOTM2NjE5NzQzMzkyNDU5AAGn_oqrYzsBMtPRc2N2aptDbGXg-iG5-VFhRCD6m4VnleH_jHY5zLezUdJza74_aem_B3z_UlltnRGnSSLfWrFf4w&e=AUD8pWkXfdA34eOteUrOjVR1HPRDj6F7-to54sCO4vLiuhm1_Mlp2-GkL3MlI46kCH00PHVdOMrM-W9V32NSvMywrrydKa5uKx-XFxb_vRVGZuWMIZrLC9G1j6ofwMn3GLJ2er0"; // enlace real de Google Maps
-
+const MAPS_URL = "https://maps.app.goo.gl/FiuXBs5VQ9qVUtFo7?g_st=ic";
 const Footer: React.FC = () => {
   const pathname = usePathname();
   const { trackLinkClick } = useTracking();
