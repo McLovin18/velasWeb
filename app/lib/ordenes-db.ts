@@ -59,7 +59,7 @@ export async function crearOrden(orden: any) {
   // Obtener todos de una vez (más eficiente con Firestore)
   // Nota: getAll no está disponible en SDK de cliente, usamos Promise.all con getDoc
   const productDocs = await Promise.all(
-    productRefs.map((ref) => getDoc(ref).catch(() => null))
+    productRefs.map((ref: any) => getDoc(ref).catch(() => null))
   );
 
   const productDataMap = new Map<string, any>();
@@ -140,7 +140,7 @@ export async function crearOrden(orden: any) {
   return { ...payload, id: docRef.id };
 }
 
-export async function obtenerOrdenesPorUsuario(uid) {
+export async function obtenerOrdenesPorUsuario(uid: string) {
   const q = query(collection(db, COLLECTION), where("userId", "==", uid));
   const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -181,14 +181,130 @@ export async function deducirStockOrden(orderId: string) {
       const prodSnap = await getDoc(prodRef);
 
       if (prodSnap.exists()) {
-        const stockActual = prodSnap.data().stock || 0;
-        const nuevoStock = Math.max(0, stockActual - producto.cantidad);
-        
-        await updateDoc(prodRef, { stock: nuevoStock });
+        const prodData = prodSnap.data();
+
+        // Si el producto tiene variaciones, deducir de la variación específica
+        if (prodData.hasVariations && Array.isArray(prodData.stockVariants)) {
+          let variacionEncontrada = false;
+
+          // Buscar la variación que coincida con los atributos seleccionados
+          const newStockVariants = prodData.stockVariants.map((variant: any) => {
+            // Verificar si esta variación coincide con la seleccionada
+            let coincide = false;
+
+            // Variaciones dinámicas (nuevo sistema)
+            if (producto.selectedVariations && producto.variationAttributeIds) {
+              coincide = producto.variationAttributeIds.every(
+                (attrId: string) => variant.attributes?.[attrId] === producto.selectedVariations[attrId]
+              );
+            }
+            // Variaciones legacy (talla/color)
+            else if (producto.selectedTalla && producto.selectedColor) {
+              coincide = variant.talla === producto.selectedTalla && variant.color === producto.selectedColor;
+            }
+
+            if (coincide) {
+              variacionEncontrada = true;
+              return {
+                ...variant,
+                cantidad: Math.max(0, (variant.cantidad || 0) - producto.cantidad),
+              };
+            }
+
+            return variant;
+          });
+
+          if (variacionEncontrada) {
+            await updateDoc(prodRef, { stockVariants: newStockVariants });
+          } else {
+            // Si no se encontró la variación, deducir del stock general
+            const stockActual = prodData.stock || 0;
+            const nuevoStock = Math.max(0, stockActual - producto.cantidad);
+            await updateDoc(prodRef, { stock: nuevoStock });
+          }
+        } else {
+          // Producto sin variaciones, deducir del stock general
+          const stockActual = prodData.stock || 0;
+          const nuevoStock = Math.max(0, stockActual - producto.cantidad);
+          await updateDoc(prodRef, { stock: nuevoStock });
+        }
       }
     }
   } catch (err) {
     console.error("Error deduciendo stock:", err);
+    throw err;
+  }
+}
+
+// Reservar stock cuando se crea una orden de transferencia (pendiente de aprobación)
+export async function reservarStockOrden(orderId: string) {
+  try {
+    const ordenRef = doc(db, COLLECTION, orderId);
+    const ordenSnap = await getDoc(ordenRef);
+
+    if (!ordenSnap.exists()) {
+      throw new Error("Orden no encontrada");
+    }
+
+    const orden = ordenSnap.data();
+
+    // Iterar sobre los productos y reservar stock
+    for (const producto of orden.productos || []) {
+      const prodRef = doc(db, "productos", producto.id);
+      const prodSnap = await getDoc(prodRef);
+
+      if (prodSnap.exists()) {
+        const prodData = prodSnap.data();
+
+        // Si el producto tiene variaciones, reservar de la variación específica
+        if (prodData.hasVariations && Array.isArray(prodData.stockVariants)) {
+          let variacionEncontrada = false;
+
+          // Buscar la variación que coincida con los atributos seleccionados
+          const newStockVariants = prodData.stockVariants.map((variant: any) => {
+            // Verificar si esta variación coincide con la seleccionada
+            let coincide = false;
+
+            // Variaciones dinámicas (nuevo sistema)
+            if (producto.selectedVariations && producto.variationAttributeIds) {
+              coincide = producto.variationAttributeIds.every(
+                (attrId: string) => variant.attributes?.[attrId] === producto.selectedVariations[attrId]
+              );
+            }
+            // Variaciones legacy (talla/color)
+            else if (producto.selectedTalla && producto.selectedColor) {
+              coincide = variant.talla === producto.selectedTalla && variant.color === producto.selectedColor;
+            }
+
+            if (coincide) {
+              variacionEncontrada = true;
+              return {
+                ...variant,
+                cantidad: Math.max(0, (variant.cantidad || 0) - producto.cantidad),
+              };
+            }
+
+            return variant;
+          });
+
+          if (variacionEncontrada) {
+            await updateDoc(prodRef, { stockVariants: newStockVariants });
+          } else {
+            // Si no se encontró la variación, reservar del stock general
+            const stockActual = prodData.stock || 0;
+            const nuevoStock = Math.max(0, stockActual - producto.cantidad);
+            await updateDoc(prodRef, { stock: nuevoStock });
+          }
+        } else {
+          // Producto sin variaciones, reservar del stock general
+          const stockActual = prodData.stock || 0;
+          const nuevoStock = Math.max(0, stockActual - producto.cantidad);
+          await updateDoc(prodRef, { stock: nuevoStock });
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Error reservando stock:", err);
     throw err;
   }
 }
@@ -211,10 +327,53 @@ export async function devolverStockOrden(orderId: string) {
       const prodSnap = await getDoc(prodRef);
 
       if (prodSnap.exists()) {
-        const stockActual = prodSnap.data().stock || 0;
-        const nuevoStock = stockActual + producto.cantidad;
-        
-        await updateDoc(prodRef, { stock: nuevoStock });
+        const prodData = prodSnap.data();
+
+        // Si el producto tiene variaciones, devolver a la variación específica
+        if (prodData.hasVariations && Array.isArray(prodData.stockVariants)) {
+          let variacionEncontrada = false;
+
+          // Buscar la variación que coincida con los atributos seleccionados
+          const newStockVariants = prodData.stockVariants.map((variant: any) => {
+            // Verificar si esta variación coincide con la seleccionada
+            let coincide = false;
+
+            // Variaciones dinámicas (nuevo sistema)
+            if (producto.selectedVariations && producto.variationAttributeIds) {
+              coincide = producto.variationAttributeIds.every(
+                (attrId: string) => variant.attributes?.[attrId] === producto.selectedVariations[attrId]
+              );
+            }
+            // Variaciones legacy (talla/color)
+            else if (producto.selectedTalla && producto.selectedColor) {
+              coincide = variant.talla === producto.selectedTalla && variant.color === producto.selectedColor;
+            }
+
+            if (coincide) {
+              variacionEncontrada = true;
+              return {
+                ...variant,
+                cantidad: (variant.cantidad || 0) + producto.cantidad,
+              };
+            }
+
+            return variant;
+          });
+
+          if (variacionEncontrada) {
+            await updateDoc(prodRef, { stockVariants: newStockVariants });
+          } else {
+            // Si no se encontró la variación, devolver al stock general
+            const stockActual = prodData.stock || 0;
+            const nuevoStock = stockActual + producto.cantidad;
+            await updateDoc(prodRef, { stock: nuevoStock });
+          }
+        } else {
+          // Producto sin variaciones, devolver al stock general
+          const stockActual = prodData.stock || 0;
+          const nuevoStock = stockActual + producto.cantidad;
+          await updateDoc(prodRef, { stock: nuevoStock });
+        }
       }
     }
   } catch (err) {

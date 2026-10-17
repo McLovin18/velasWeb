@@ -5,6 +5,8 @@ import { getSnapshotPricing } from "../lib/pricing";
 import { useUser } from "../context/UserContext";
 import BottomBarPublic from "../components/BottomBarPublic";
 import { obtenerAtributos } from "../lib/atributos-db";
+import { obtenerCuentasBancarias } from "../lib/cuentas-bancarias-db";
+import TransferenciaModal from "../components/TransferenciaModal";
 
 function resolveCartItemKey(item: any) {
   if (!item) return "";
@@ -50,6 +52,8 @@ export default function CartPage() {
   const [error, setError] = useState("");
   const { isLogged } = useUser();
   const [atributos, setAtributos] = useState<any[]>([]);
+  const [showTransferenciaModal, setShowTransferenciaModal] = useState(false);
+  const [cuentasBancarias, setCuentasBancarias] = useState<any[]>([]);
 
   const calcularPrecioData = (p: any) => {
     const { basePrice, discount, hasDiscount, fakeOldPrice, finalPrice } = getSnapshotPricing(p);
@@ -62,7 +66,17 @@ export default function CartPage() {
       setAtributos(data);
     }
 
+    async function loadCuentasBancarias() {
+      try {
+        const data = await obtenerCuentasBancarias();
+        setCuentasBancarias(data);
+      } catch (error) {
+        console.error("Error cargando cuentas bancarias:", error);
+      }
+    }
+
     loadAtributos();
+    loadCuentasBancarias();
   }, []);
 
   const subtotal = carrito.reduce((sum, p) => {
@@ -332,7 +346,7 @@ export default function CartPage() {
                     </div>
                   </div>
 
-                  <div>
+                  <div className="space-y-3">
                     <button
                       onClick={handleGenerarOrden}
                       className="w-full flex items-center justify-center gap-2 py-3.5 px-6 bg-[var(--primary)] hover:bg-[var(--primaryHover)] text-[var(--primaryForeground)] font-extrabold text-sm rounded-xl transition-colors shadow-md"
@@ -340,6 +354,14 @@ export default function CartPage() {
                     >
                       <span className="material-icons-round text-base">chat</span>
                       Pedir por WhatsApp
+                    </button>
+                    <button
+                      onClick={() => setShowTransferenciaModal(true)}
+                      className="w-full flex items-center justify-center gap-2 py-3.5 px-6 bg-slate-700 hover:bg-slate-800 text-white font-extrabold text-sm rounded-xl transition-colors shadow-md"
+                      title="Pagar por transferencia bancaria"
+                    >
+                      <span className="material-icons-round text-base">account_balance</span>
+                      Pagar por Transferencia
                     </button>
                   </div>
                 </div>
@@ -349,6 +371,23 @@ export default function CartPage() {
         </main>
       </div>
       {!isLogged && <BottomBarPublic />}
+
+      {/* Modal de Transferencia */}
+      {showTransferenciaModal && (
+        <TransferenciaModal
+          carrito={carrito}
+          subtotal={subtotal}
+          total={total}
+          onClose={() => setShowTransferenciaModal(false)}
+          cuentasBancarias={cuentasBancarias}
+          atributos={atributos}
+          getVariationText={getVariationText}
+          onOrdenCreada={() => {
+            setShowTransferenciaModal(false);
+            // Opcional: limpiar carrito o redirigir
+          }}
+        />
+      )}
     </>
   );
 }

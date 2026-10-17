@@ -3,7 +3,7 @@ import { Resend } from "resend";
 import { getSnapshotPricing } from "../../../lib/pricing";
 
 /**
- * 📧 ENDPOINT: Enviar correo de orden con Resend
+ * ENDPOINT: Enviar correo de orden con Resend
  * 
  * Usado cuando se crea una orden (proforma)
  * Envía información de la orden al cliente
@@ -22,10 +22,10 @@ function buildOrderEmailHTML(orden: any): string {
     <tr>
       <td>
         <!-- Header con gradiente púrpura -->
-        <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);border-radius:12px 12px 0 0;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#6d28d9;border-radius:12px 12px 0 0;">
           <tr>
             <td style="padding:32px;text-align:center;color:white;">
-              <h1 style="margin:0 0 8px;font-size:28px;font-weight:bold;">🛍️ TecnoThings</h1>
+              <h1 style="margin:0 0 8px;font-size:28px;font-weight:bold;">Juliana Basics</h1>
               <p style="margin:0;font-size:14px;opacity:0.9;">Tu orden ha sido recibida</p>
             </td>
           </tr>
@@ -36,7 +36,7 @@ function buildOrderEmailHTML(orden: any): string {
           <tr>
             <td style="padding:24px 36px;">
               <div style="background:#f0f9ff;border-left:4px solid #6d28d9;padding:16px;border-radius:4px;">
-                <p style="margin:0 0 4px;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:0.5px;font-weight:bold;">Número de orden</p>
+                <p style="margin:0 0 4px;font-size:12px;color:#666;font-weight:bold;">Numero de orden</p>
                 <p style="margin:0;font-size:24px;font-weight:bold;color:#6d28d9;">${orden.orderId || "N/A"}</p>
                 <p style="margin:8px 0 0;font-size:13px;color:#666;">Fecha: ${orden.createdAt ? new Date(orden.createdAt).toLocaleDateString("es-ES") : "N/A"}</p>
               </div>
@@ -110,7 +110,7 @@ function buildOrderEmailHTML(orden: any): string {
           <tr>
             <td style="padding:0 36px 24px;">
               <div style="background:#fef9c3;border:1px solid #fde68a;border-radius:8px;padding:16px 20px;">
-                <p style="margin:0 0 12px;font-size:14px;color:#92400e;font-weight:bold;">📅 Próximos pasos</p>
+                <p style="margin:0 0 12px;font-size:14px;color:#92400e;font-weight:bold;">Proximos pasos</p>
                 <p style="margin:0 0 8px;font-size:14px;color:#92400e;">
                   Visita nuestro local el <strong>${orden.visitaFecha || "N/A"}</strong> a las <strong>${orden.visitaHora || "N/A"}</strong> para retirar tu pedido.
                 </p>
@@ -128,8 +128,8 @@ function buildOrderEmailHTML(orden: any): string {
         <!-- Footer -->
         <tr>
           <td style="background:#f9fafb;padding:20px 36px;text-align:center;border-top:1px solid #e5e7eb;border-radius:0 0 12px 12px;">
-            <p style="margin:0 0 8px;font-size:12px;color:#9ca3af;">Este correo fue enviado automáticamente por TecnoThings</p>
-            <p style="margin:0;font-size:11px;color:#d1d5db;">© ${new Date().getFullYear()} TecnoThings. Todos los derechos reservados.</p>
+            <p style="margin:0 0 8px;font-size:12px;color:#9ca3af;">Este correo fue enviado automáticamente por Juliana Basics</p>
+            <p style="margin:0;font-size:11px;color:#d1d5db;">© ${new Date().getFullYear()} Juliana Basics. Todos los derechos reservados.</p>
           </td>
         </tr>
       </td>
@@ -165,11 +165,11 @@ export async function POST(req: NextRequest) {
 
     // Enviar email con Resend
     const emailResponse = await resend.emails.send({
-      from: "pedidos@tecnothings.com",
+      from: process.env.EMAIL_FROM_ADDRESS || "pedidos@tecnothings.com",
       to: email.trim(),
-      subject: `Tu pedido ${orden.orderId} ha sido recibido — TecnoThings`,
+      subject: `Tu pedido ${orden.orderId} ha sido recibido — Juliana Basics`,
       html: buildOrderEmailHTML(orden),
-      replyTo: "soporte@tecnothings.com",
+      replyTo: process.env.EMAIL_FROM_ADDRESS || "soporte@tecnothings.com",
     });
 
     if (emailResponse.error) {

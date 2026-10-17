@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
 
     // Enviar SOLO con el dominio verificado
     const emailResponse = await resend.emails.send({
-      from: "noreply@tecnothings.com",
+      from: process.env.EMAIL_FROM_ADDRESS || "noreply@tecnothings.com",
       to: email,
       subject: "Verifica tu cuenta",
       html: buildVerificationEmailHTML(verificationLink),
@@ -114,11 +114,11 @@ export async function POST(req: NextRequest) {
         "X-MSMail-Priority": "Normal",
         "Precedence": "transactional",
         "X-Mailer": "Resend",
-        "List-Unsubscribe": "<mailto:unsubscribe@technothings.com>",
+        "List-Unsubscribe": `<mailto:unsubscribe@${process.env.EMAIL_FROM_ADDRESS?.split('@')[1] || 'technothings.com'}>`,
         "X-Entity-Ref-ID": "transactional",
         "X-Auto-Response-Suppress": "All",
       },
-      reply_to: "soporte@tecnothings.com",
+      reply_to: process.env.EMAIL_FROM_ADDRESS || "soporte@tecnothings.com",
     });
 
     console.log("[send-verification-email] Respuesta de Resend:", emailResponse);
