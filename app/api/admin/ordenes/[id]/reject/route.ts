@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { actualizarOrdenAdmin, devolverStockOrdenAdmin } from "../../../../../lib/ordenes-db-admin";
+import { actualizarOrdenAdmin, devolverStockOrdenAdmin } from "@/app/lib/ordenes-db-admin";
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
