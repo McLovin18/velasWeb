@@ -357,7 +357,7 @@ export default function CartPage() {
                     </button>
                     <button
                       onClick={() => setShowTransferenciaModal(true)}
-                      className="w-full flex items-center justify-center gap-2 py-3.5 px-6 bg-slate-700 hover:bg-slate-800 text-white font-extrabold text-sm rounded-xl transition-colors shadow-md"
+                      className="w-full flex items-center justify-center gap-2 py-3.5 px-6 bg-[#584738] hover:bg-[#3f332a] text-[#F1EADA] font-extrabold text-sm rounded-xl transition-colors shadow-md"
                       title="Pagar por transferencia bancaria"
                     >
                       <span className="material-icons-round text-base">account_balance</span>
