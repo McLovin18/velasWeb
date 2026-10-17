@@ -10,55 +10,55 @@ function buildVerificationEmailHTML(verificationLink: string): string {
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-  <title>Verifica tu correo — TecnoThings</title>
+  <title>Verifica tu correo — Juliana Basics</title>
   <style>
-    body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { margin: 0; padding: 0; font-family: Georgia, serif; }
     table { border-collapse: collapse; }
     a { color: inherit; }
   </style>
 </head>
 <body>
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#fff;padding:0;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F1EADA;padding:0;">
     <tr>
       <td align="center" style="padding:20px;">
-        <table width="100%" maxwidth="500" cellpadding="0" cellspacing="0" style="max-width:500px;background:#fff;border:1px solid #ddd;border-radius:4px;">
+        <table width="100%" maxwidth="500" cellpadding="0" cellspacing="0" style="max-width:500px;background:#fff;border:1px solid #B59E7D;border-radius:12px;">
           
-          <!-- Header simple -->
+          <!-- Header con color de marca -->
           <tr>
-            <td style="background:#6d28d9;padding:20px;text-align:center;color:#fff;">
-              <h1 style="margin:0;font-size:24px;font-weight:bold;">TecnoThings</h1>
+            <td style="background:#584738;padding:20px;text-align:center;color:#F1EADA;border-radius:12px 12px 0 0;">
+              <h1 style="margin:0;font-size:24px;font-weight:bold;font-family:Georgia,serif;">Juliana Basics</h1>
             </td>
           </tr>
 
           <!-- Contenido -->
           <tr>
-            <td style="padding:30px;color:#333;font-size:14px;line-height:1.6;">
+            <td style="padding:30px;color:#584738;font-size:14px;line-height:1.6;">
               <p>Hola,</p>
-              <p>Has solicitado verificar tu correo electrónico en TecnoThings. Haz clic en el botón de abajo para confirmar tu identidad.</p>
+              <p>Has solicitado verificar tu correo electronico en Juliana Basics. Haz clic en el boton de abajo para confirmar tu identidad.</p>
               
               <!-- Botón simple -->
               <table cellpadding="0" cellspacing="0" style="margin:20px 0;">
                 <tr>
-                  <td style="background:#6d28d9;padding:12px 30px;border-radius:4px;">
-                    <a href="${verificationLink}" style="color:#fff;text-decoration:none;font-weight:bold;display:block;">
+                  <td style="background:#584738;padding:12px 30px;border-radius:4px;">
+                    <a href="${verificationLink}" style="color:#F1EADA;text-decoration:none;font-weight:bold;display:block;">
                       Verificar correo
                     </a>
                   </td>
                 </tr>
               </table>
 
-              <p style="color:#666;font-size:12px;">O accede aquí: <a href="${verificationLink}" style="color:#6d28d9;word-break:break-all;">${verificationLink}</a></p>
+              <p style="color:#584738;font-size:12px;">O accede aqui: <a href="${verificationLink}" style="color:#584738;word-break:break-all;">${verificationLink}</a></p>
               
-              <p style="color:#999;font-size:12px;margin-top:20px;padding-top:20px;border-top:1px solid #eee;">
-                Este enlace expirará en 24 horas. Si no lo solicitaste, ignora este mensaje.
+              <p style="color:#584738;font-size:12px;margin-top:20px;padding-top:20px;border-top:1px solid #B59E7D;">
+                Este enlace expirara en 24 horas. Si no lo solicitaste, ignora este mensaje.
               </p>
             </td>
           </tr>
 
           <!-- Footer -->
           <tr>
-            <td style="background:#f9f9f9;padding:15px;text-align:center;font-size:11px;color:#999;border-top:1px solid #eee;">
-              © ${new Date().getFullYear()} TecnoThings. No responder a este correo.
+            <td style="background:#F1EADA;padding:15px;text-align:center;font-size:11px;color:#584738;border-top:1px solid #B59E7D;border-radius:0 0 12px 12px;">
+              © ${new Date().getFullYear()} Juliana Basics. No responder a este correo.
             </td>
           </tr>
         </table>
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
 
     // Enviar SOLO con el dominio verificado
     const emailResponse = await resend.emails.send({
-      from: process.env.EMAIL_FROM_ADDRESS || "noreply@tecnothings.com",
+      from: `Pedidos JulianaBasics <${process.env.EMAIL_FROM_ADDRESS || "noreply@technothings.com"}>`,
       to: email,
       subject: "Verifica tu cuenta",
       html: buildVerificationEmailHTML(verificationLink),

@@ -36,14 +36,14 @@ function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): st
                   </td>
                 ` : ""}
                 <td>
-                  <div style="font-weight: 600; color: #1f2937; font-size: 14px;">${p.nombre}</div>
+                  <div style="font-weight: 600; color: #584738; font-size: 14px;">${p.nombre}</div>
                   ${variacionesHTML}
-                  <div style="margin-top: 4px; font-size: 13px; color: #6b7280;">
+                  <div style="margin-top: 4px; font-size: 13px; color: #B59E7D;">
                     Cantidad: ${p.cantidad} - Precio unitario: $${(p.precioUnitario || 0).toFixed(2)}
                   </div>
                 </td>
                 <td style="text-align: right; vertical-align: top; padding-top: 12px;">
-                  <div style="font-weight: 600; color: #1f2937; font-size: 14px;">
+                  <div style="font-weight: 600; color: #584738; font-size: 14px;">
                     $${((p.precioUnitario || 0) * p.cantidad).toFixed(2)}
                   </div>
                 </td>
@@ -58,20 +58,20 @@ function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): st
   // Información de cuenta bancaria
   const cuentaBancariaHTML = orden.cuentaBancaria
     ? `
-      <div style="background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 16px; border-radius: 4px; margin: 16px 0;">
-        <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #0369a1;">
+      <div style="background: #F1EADA; border-left: 4px solid #B59E7D; padding: 16px; border-radius: 4px; margin: 16px 0;">
+        <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #584738;">
           Cuenta bancaria seleccionada:
         </p>
-        <p style="margin: 4px 0; font-size: 13px; color: #1f2937;">
+        <p style="margin: 4px 0; font-size: 13px; color: #584738;">
           <strong>Banco:</strong> ${orden.cuentaBancaria.banco}
         </p>
-        <p style="margin: 4px 0; font-size: 13px; color: #1f2937;">
+        <p style="margin: 4px 0; font-size: 13px; color: #584738;">
           <strong>Tipo:</strong> ${orden.cuentaBancaria.tipo}
         </p>
-        <p style="margin: 4px 0; font-size: 13px; color: #1f2937;">
+        <p style="margin: 4px 0; font-size: 13px; color: #584738;">
           <strong>Número:</strong> ${orden.cuentaBancaria.numeroCuenta}
         </p>
-        <p style="margin: 4px 0; font-size: 13px; color: #1f2937;">
+        <p style="margin: 4px 0; font-size: 13px; color: #584738;">
           <strong>Titular:</strong> ${orden.cuentaBancaria.titular}
         </p>
       </div>
@@ -99,15 +99,15 @@ function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): st
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
 </head>
-<body style="font-family: Arial, sans-serif; background: #f3f4f6; margin: 0; padding: 20px;">
+<body style="font-family: Georgia, serif; background: #F1EADA; margin: 0; padding: 20px;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
     <tr>
       <td>
-        <!-- Header simple sin gradiente -->
-        <table width="100%" cellpadding="0" cellspacing="0" style="background: #6d28d9; border-radius: 12px 12px 0 0;">
+        <!-- Header con color de marca -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="background: #584738; border-radius: 12px 12px 0 0;">
           <tr>
-            <td style="padding: 32px; text-align: center; color: white;">
-              <h1 style="margin: 0 0 8px; font-size: 28px; font-weight: bold;">Juliana Basics</h1>
+            <td style="padding: 32px; text-align: center; color: #F1EADA;">
+              <h1 style="margin: 0 0 8px; font-size: 28px; font-weight: bold; font-family: Georgia, serif;">Juliana Basics</h1>
               <p style="margin: 0; font-size: 14px; opacity: 0.9;">
                 ${esCliente ? "Confirmación de orden recibida" : "Nueva orden recibida"}
               </p>
@@ -119,17 +119,17 @@ function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): st
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td style="padding: 24px 36px;">
-              <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 4px;">
-                <p style="margin: 0 0 4px; font-size: 12px; color: #666;">
+              <div style="background: #F1EADA; border-left: 4px solid #B59E7D; padding: 16px; border-radius: 4px;">
+                <p style="margin: 0 0 4px; font-size: 12px; color: #584738;">
                   Numero de orden
                 </p>
-                <p style="margin: 0; font-size: 24px; font-weight: bold; color: #d97706;">
+                <p style="margin: 0; font-size: 24px; font-weight: bold; color: #584738;">
                   ${orden.orderId || "N/A"}
                 </p>
-                <p style="margin: 8px 0 0; font-size: 13px; color: #666;">
+                <p style="margin: 8px 0 0; font-size: 13px; color: #584738;">
                   Estado: <strong>En revision</strong>
                 </p>
-                <p style="margin: 4px 0 0; font-size: 13px; color: #666;">
+                <p style="margin: 4px 0 0; font-size: 13px; color: #584738;">
                   Fecha: ${orden.createdAt ? new Date(orden.createdAt).toLocaleDateString("es-ES") : "N/A"}
                 </p>
               </div>
@@ -147,17 +147,17 @@ function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): st
                 <h2 style="margin: 0 0 12px; font-size: 16px; font-weight: bold; color: #1f2937;">
                   Datos del cliente
                 </h2>
-                <div style="background: #f9fafb; padding: 16px; border-radius: 8px; border: 1px solid #e5e7eb;">
-                  <p style="margin: 4px 0; font-size: 13px; color: #1f2937;">
+                <div style="background: #F1EADA; padding: 16px; border-radius: 8px; border: 1px solid #B59E7D;">
+                  <p style="margin: 4px 0; font-size: 13px; color: #584738;">
                     <strong>Nombre:</strong> ${orden.datosCliente?.nombre || "N/A"}
                   </p>
-                  <p style="margin: 4px 0; font-size: 13px; color: #1f2937;">
+                  <p style="margin: 4px 0; font-size: 13px; color: #584738;">
                     <strong>Cédula/RUC:</strong> ${orden.datosCliente?.cedulaRuc || "N/A"}
                   </p>
-                  <p style="margin: 4px 0; font-size: 13px; color: #1f2937;">
+                  <p style="margin: 4px 0; font-size: 13px; color: #584738;">
                     <strong>Teléfono:</strong> ${orden.datosCliente?.telefono || "N/A"}
                   </p>
-                  <p style="margin: 4px 0; font-size: 13px; color: #1f2937;">
+                  <p style="margin: 4px 0; font-size: 13px; color: #584738;">
                     <strong>Email:</strong> ${orden.datosCliente?.email || "N/A"}
                   </p>
                 </div>
@@ -173,14 +173,14 @@ function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): st
               <h2 style="margin: 0 0 12px; font-size: 16px; font-weight: bold; color: #1f2937;">
                 Datos de envío
               </h2>
-              <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border: 1px solid #86efac;">
-                <p style="margin: 4px 0; font-size: 13px; color: #1f2937;">
+              <div style="background: #F1EADA; padding: 16px; border-radius: 8px; border: 1px solid #B59E7D;">
+                <p style="margin: 4px 0; font-size: 13px; color: #584738;">
                   <strong>Ciudad:</strong> ${orden.datosEnvio?.nombreCiudad || orden.datosEnvio?.ciudad || "N/A"}
                 </p>
-                <p style="margin: 4px 0; font-size: 13px; color: #1f2937;">
+                <p style="margin: 4px 0; font-size: 13px; color: #584738;">
                   <strong>Dirección:</strong> ${orden.datosEnvio?.direccion || "N/A"}
                 </p>
-                <p style="margin: 4px 0; font-size: 13px; color: #1f2937;">
+                <p style="margin: 4px 0; font-size: 13px; color: #584738;">
                   <strong>Costo de envío:</strong> $${(orden.datosEnvio?.costoEnvio || 0).toFixed(2)}
                 </p>
               </div>
@@ -208,16 +208,16 @@ function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): st
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td style="padding: 0 36px 24px;">
-              <div style="background: #f5f3ff; padding: 16px; border-radius: 8px; border: 1px solid #c4b5fd;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #6b7280;">
+              <div style="background: #F1EADA; padding: 16px; border-radius: 8px; border: 1px solid #B59E7D;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #584738;">
                   <span>Subtotal productos</span>
                   <span>$${((orden.total || 0) - (orden.datosEnvio?.costoEnvio || 0)).toFixed(2)}</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #6b7280;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #584738;">
                   <span>Costo de envío</span>
                   <span>$${(orden.datosEnvio?.costoEnvio || 0).toFixed(2)}</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #7c3aed; padding-top: 8px; border-top: 1px solid #c4b5fd;">
+                <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #584738; padding-top: 8px; border-top: 1px solid #B59E7D;">
                   <span>Total</span>
                   <span>$${(orden.total || 0).toFixed(2)}</span>
                 </div>
@@ -230,14 +230,14 @@ function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): st
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td style="padding: 0 36px 24px;">
-                <div style="background: #eff6ff; padding: 16px; border-radius: 8px; border: 1px solid #bfdbfe;">
-                  <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #1e40af;">
-                    📋 Próximos pasos:
+                <div style="background: #F1EADA; padding: 16px; border-radius: 8px; border: 1px solid #B59E7D;">
+                  <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #584738;">
+                    Proximos pasos:
                   </p>
-                  <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #1f2937; line-height: 1.6;">
-                    <li>Verificaremos tu transferencia en las próximas 24 horas</li>
+                  <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #584738; line-height: 1.6;">
+                    <li>Verificaremos tu transferencia en las proximas 24 horas</li>
                     <li>Te notificaremos cuando la orden sea aprobada</li>
-                    <li>Una vez aprobada, procederemos con el envío</li>
+                    <li>Una vez aprobada, procederemos con el envio</li>
                   </ul>
                 </div>
               </td>
@@ -289,7 +289,7 @@ export async function POST(req: NextRequest) {
     });
 
     const emailResponse = await resend.emails.send({
-      from: process.env.EMAIL_FROM_ADDRESS || "noreply@technothings.com",
+      from: `Pedidos JulianaBasics <${process.env.EMAIL_FROM_ADDRESS || "noreply@technothings.com"}>`,
       to: toEmail,
       subject,
       html: buildTransferenciaEmailHTML(orden, tipo),

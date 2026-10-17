@@ -12,16 +12,15 @@ function buildRechazoEmailHTML(orden: any, tipo: "cliente" | "dueño"): string {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
 </head>
-<body style="font-family: Arial, sans-serif; background: #f3f4f6; margin: 0; padding: 20px;">
+<body style="font-family: Georgia, serif; background: #F1EADA; margin: 0; padding: 20px;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
     <tr>
       <td>
-        <!-- Header con gradiente rojo -->
-        <table width="100%" cellpadding="0" cellspacing="0" style="background: #dc2626; border-radius: 12px 12px 0 0;">
+        <!-- Header con color de marca -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="background: #584738; border-radius: 12px 12px 0 0;">
           <tr>
-            <td style="padding: 32px; text-align: center; color: white;">
-              <div style="font-size: 48px; margin-bottom: 8px;">🚫</div>
-              <h1 style="margin: 0 0 8px; font-size: 28px; font-weight: bold;">Orden Rechazada</h1>
+            <td style="padding: 32px; text-align: center; color: #F1EADA;">
+              <h1 style="margin: 0 0 8px; font-size: 28px; font-weight: bold; font-family: Georgia, serif;">Orden Rechazada</h1>
               <p style="margin: 0; font-size: 14px; opacity: 0.9;">
                 ${esCliente ? "Tu orden no pudo ser procesada" : "Orden rechazada"}
               </p>
@@ -33,17 +32,17 @@ function buildRechazoEmailHTML(orden: any, tipo: "cliente" | "dueño"): string {
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td style="padding: 24px 36px;">
-              <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 16px; border-radius: 4px;">
-                <p style="margin: 0 0 4px; font-size: 12px; color: #666; font-weight: bold;">
-                  Número de orden
+              <div style="background: #F1EADA; border-left: 4px solid #B59E7D; padding: 16px; border-radius: 4px;">
+                <p style="margin: 0 0 4px; font-size: 12px; color: #584738; font-weight: bold;">
+                  Numero de orden
                 </p>
-                <p style="margin: 0; font-size: 24px; font-weight: bold; color: #dc2626;">
+                <p style="margin: 0; font-size: 24px; font-weight: bold; color: #584738;">
                   ${orden.orderId || "N/A"}
                 </p>
-                <p style="margin: 8px 0 0; font-size: 13px; color: #666;">
-                  Estado: <strong style="color: #dc2626;">Rechazada</strong>
+                <p style="margin: 8px 0 0; font-size: 13px; color: #584738;">
+                  Estado: <strong style="color: #584738;">Rechazada</strong>
                 </p>
-                <p style="margin: 4px 0 0; font-size: 13px; color: #666;">
+                <p style="margin: 4px 0 0; font-size: 13px; color: #584738;">
                   Fecha: ${new Date().toLocaleDateString("es-ES")}
                 </p>
               </div>
@@ -58,8 +57,8 @@ function buildRechazoEmailHTML(orden: any, tipo: "cliente" | "dueño"): string {
               <h2 style="margin: 0 0 12px; font-size: 16px; font-weight: bold; color: #1f2937;">
                 Motivo del rechazo
               </h2>
-              <div style="background: #fef2f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca;">
-                <p style="margin: 0; font-size: 14px; color: #7f1d1d; line-height: 1.6;">
+              <div style="background: #F1EADA; padding: 16px; border-radius: 8px; border: 1px solid #B59E7D;">
+                <p style="margin: 0; font-size: 14px; color: #584738; line-height: 1.6;">
                   ${motivoRechazo}
                 </p>
               </div>
@@ -71,14 +70,14 @@ function buildRechazoEmailHTML(orden: any, tipo: "cliente" | "dueño"): string {
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td style="padding: 0 36px 24px;">
-                <div style="background: #eff6ff; padding: 16px; border-radius: 8px; border: 1px solid #bfdbfe;">
-                  <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #1e40af;">
-                    ¿Qué puedes hacer?
+                <div style="background: #F1EADA; padding: 16px; border-radius: 8px; border: 1px solid #B59E7D;">
+                  <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #584738;">
+                    Que puedes hacer?
                   </p>
-                  <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #1f2937; line-height: 1.6;">
+                  <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #584738; line-height: 1.6;">
                     <li>Verifica que la transferencia sea correcta</li>
                     <li>Si hay un error, puedes intentar realizar el pago nuevamente</li>
-                    <li>Si tienes dudas, contáctanos por WhatsApp o email</li>
+                    <li>Si tienes dudas, contactanos por WhatsApp o email</li>
                   </ul>
                 </div>
               </td>
@@ -121,7 +120,7 @@ export async function POST(req: NextRequest) {
         : process.env.OWNER_EMAIL || "admin@technothings.com";
     const subject =
       tipo === "cliente"
-        ? `🚫 Orden ${orden.orderId} - Rechazada`
+        ? `Orden ${orden.orderId} - Rechazada`
         : `Orden rechazada - ${orden.orderId}`;
 
     console.log(`[send-rechazo-email] Enviando email ${tipo}:`, {
@@ -130,7 +129,7 @@ export async function POST(req: NextRequest) {
     });
 
     const emailResponse = await resend.emails.send({
-      from: process.env.EMAIL_FROM_ADDRESS || "noreply@technothings.com",
+      from: `Pedidos JulianaBasics <${process.env.EMAIL_FROM_ADDRESS || "noreply@technothings.com"}>`,
       to: toEmail,
       subject,
       html: buildRechazoEmailHTML(orden, tipo),
