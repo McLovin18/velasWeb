@@ -47,7 +47,7 @@ function resolveAvailableStock(item: any) {
 
 // --- Pagina principal del carrito
 export default function CartPage() {
-  const { carrito: carritoRaw, removeCarrito, addCarrito } = useUser();
+  const { carrito: carritoRaw, removeCarrito, addCarrito, clearCarrito } = useUser();
   const carrito = carritoRaw as any[];
   const [error, setError] = useState("");
   const { isLogged } = useUser();
@@ -384,8 +384,8 @@ export default function CartPage() {
           getVariationText={getVariationText}
           onOrdenCreada={() => {
             setShowTransferenciaModal(false);
-            // Opcional: limpiar carrito o redirigir
           }}
+          clearCarrito={clearCarrito}
         />
       )}
     </>

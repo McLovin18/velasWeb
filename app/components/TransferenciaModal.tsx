@@ -12,6 +12,7 @@ interface TransferenciaModalProps {
   atributos: any[];
   getVariationText: (p: any) => string;
   onOrdenCreada: () => void;
+  clearCarrito: () => void;
 }
 
 const CIUDADES = [
@@ -36,6 +37,7 @@ export default function TransferenciaModal({
   atributos,
   getVariationText,
   onOrdenCreada,
+  clearCarrito,
 }: TransferenciaModalProps) {
   const [formData, setFormData] = useState({
     nombre: "",
@@ -79,6 +81,11 @@ export default function TransferenciaModal({
     }
     if (!formData.cedulaRuc.trim()) {
       setError("La cédula/RUC es requerida");
+      return;
+    }
+    const cedulaRucDigits = formData.cedulaRuc.replace(/\D/g, '');
+    if (cedulaRucDigits.length !== 10 && cedulaRucDigits.length !== 13) {
+      setError("La cédula debe tener 10 dígitos o el RUC 13 dígitos");
       return;
     }
     if (!formData.telefono.trim()) {
@@ -177,6 +184,7 @@ export default function TransferenciaModal({
       alert(
         "✅ Orden creada exitosamente. Hemos enviado un correo con los detalles de tu compra."
       );
+      clearCarrito();
       onOrdenCreada();
     } catch (err: any) {
       console.error("Error:", err);

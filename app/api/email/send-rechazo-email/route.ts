@@ -1,6 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
+// Helper para convertir Timestamp de Firestore a Date
+function formatDate(timestamp: any): string {
+  if (!timestamp) return "N/A";
+  
+  // Si es un Timestamp de Firestore con método toDate
+  if (timestamp && typeof timestamp.toDate === 'function') {
+    return timestamp.toDate().toLocaleDateString("es-ES");
+  }
+  
+  // Si es un Timestamp de Firestore con segundos y nanosegundos
+  if (timestamp && typeof timestamp.seconds === 'number') {
+    return new Date(timestamp.seconds * 1000).toLocaleDateString("es-ES");
+  }
+  
+  // Si ya es un Date o string
+  try {
+    return new Date(timestamp).toLocaleDateString("es-ES");
+  } catch {
+    return "N/A";
+  }
+}
+
 function buildRechazoEmailHTML(orden: any, tipo: "cliente" | "dueño"): string {
   const esCliente = tipo === "cliente";
   const motivoRechazo = orden.motivoRechazo || "No especificado";
@@ -43,7 +65,7 @@ function buildRechazoEmailHTML(orden: any, tipo: "cliente" | "dueño"): string {
                   Estado: <strong style="color: #584738;">Rechazada</strong>
                 </p>
                 <p style="margin: 4px 0 0; font-size: 13px; color: #584738;">
-                  Fecha: ${new Date().toLocaleDateString("es-ES")}
+                  Fecha: ${formatDate(orden.createdAt)}
                 </p>
               </div>
             </td>
@@ -139,7 +161,7 @@ export async function POST(req: NextRequest) {
         "Precedence": "transactional",
         "X-Mailer": "Resend",
       },
-      reply_to: process.env.EMAIL_FROM_ADDRESS || "soporte@technothings.com",
+      replyTo: process.env.EMAIL_FROM_ADDRESS || "soporte@technothings.com",
     });
 
     console.log("[send-rechazo-email] Respuesta de Resend:", emailResponse);

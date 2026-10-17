@@ -124,14 +124,16 @@ export default function PedidosAdminPage() {
 		try {
 			setLoading(true);
 
-			// Si es transferencia, el stock ya fue reservado al crear la orden
-			// Solo necesitamos actualizar el estado y enviar emails
-			if (orden.metodoPago === "transferencia") {
-				await actualizarOrden(orden.id, { estado: "aprobada" });
-			} else {
-				// Para otros métodos, deducir stock cuando se aprueba
-				await deducirStockOrden(orden.id);
-				await actualizarOrden(orden.id, { estado: "aprobada" });
+			// Llamar al API endpoint que usa admin SDK
+			const res = await fetch(`/api/admin/ordenes/approve`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ ordenId: orden.id, orden }),
+			});
+
+			if (!res.ok) {
+				const error = await res.json();
+				throw new Error(error.error || "Error al aprobar orden");
 			}
 
 			// Enviar emails de aprobación
@@ -167,16 +169,17 @@ export default function PedidosAdminPage() {
 		try {
 			setLoading(true);
 
-			// Si es transferencia, devolver el stock que fue reservado
-			if (orden.metodoPago === "transferencia") {
-				await devolverStockOrden(orden.id);
-			}
-
-			// Actualizar estado
-			await actualizarOrden(orden.id, {
-				estado: "rechazada",
-				motivoRechazo: motivo || "Rechazada por el administrador",
+			// Llamar al API endpoint que usa admin SDK
+			const res = await fetch(`/api/admin/ordenes/reject`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ ordenId: orden.id, orden, motivo }),
 			});
+
+			if (!res.ok) {
+				const error = await res.json();
+				throw new Error(error.error || "Error al rechazar orden");
+			}
 
 			// Enviar emails de rechazo
 			try {

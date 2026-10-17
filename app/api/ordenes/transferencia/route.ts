@@ -32,6 +32,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Validar cédula/RUC (10 o 13 dígitos)
+    const cedulaRucDigits = datosCliente.cedulaRuc?.replace(/\D/g, '') || '';
+    if (cedulaRucDigits.length !== 10 && cedulaRucDigits.length !== 13) {
+      return NextResponse.json(
+        { error: "La cédula debe tener 10 dígitos o el RUC 13 dígitos" },
+        { status: 400 }
+      );
+    }
+
     if (!datosEnvio || !datosEnvio.ciudad || !datosEnvio.direccion) {
       return NextResponse.json(
         { error: "Datos de envío incompletos" },
@@ -126,12 +135,20 @@ export async function POST(req: NextRequest) {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
+      // Convertir Timestamp a string ISO para serialización JSON
+      const ordenParaEmail = {
+        ...orden,
+        createdAt: orden.createdAt?.toDate ? orden.createdAt.toDate().toISOString() : 
+                   orden.createdAt?.seconds ? new Date(orden.createdAt.seconds * 1000).toISOString() :
+                   orden.createdAt
+      };
+
       console.log("[transferencia] Enviando email al cliente...");
       const emailClienteRes = await fetch(`${baseUrl}/api/email/send-transferencia-email`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          orden,
+          orden: ordenParaEmail,
           tipo: "cliente",
         }),
       });
@@ -148,7 +165,7 @@ export async function POST(req: NextRequest) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          orden,
+          orden: ordenParaEmail,
           tipo: "dueño",
         }),
       });

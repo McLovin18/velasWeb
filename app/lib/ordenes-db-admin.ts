@@ -121,17 +121,31 @@ export async function crearOrdenAdmin(orden: any) {
     });
   }
 
+  // Agregar costo de envío al total si existe
+  const costoEnvio = Number(orden.datosEnvio?.costoEnvio || 0);
+  const totalConEnvio = total + costoEnvio;
+
   const payload = {
     ...orden,
     productos: productosProcesados,
-    total,
+    total: totalConEnvio,
     orderId,
     estado: orden.estado || "generada",
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
   };
 
   const docRef = await db.collection(COLLECTION).add(payload);
-  return { ...payload, id: docRef.id };
+  
+  // Leer el documento para obtener el Timestamp real de createdAt
+  const docSnap = await docRef.get();
+  const docData = docSnap.data();
+  
+  return { ...payload, ...docData, id: docRef.id };
+}
+
+export async function actualizarOrdenAdmin(id: string, data: any) {
+  const db = admin.firestore();
+  await db.collection(COLLECTION).doc(id).update(data);
 }
 
 // Deducir stock cuando se aprueba una orden (Admin SDK)

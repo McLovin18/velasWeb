@@ -1,13 +1,54 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
+// Helper para convertir Timestamp de Firestore a Date
+function formatDate(timestamp: any): string {
+  if (!timestamp) return "N/A";
+  
+  try {
+    // Si es un string ISO (como ahora lo enviamos desde el endpoint)
+    if (typeof timestamp === 'string') {
+      const date = new Date(timestamp);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleDateString("es-ES");
+      }
+    }
+    
+    // Si es un Timestamp de Firestore con método toDate
+    if (typeof timestamp.toDate === 'function') {
+      return timestamp.toDate().toLocaleDateString("es-ES");
+    }
+    
+    // Si es un Timestamp de Firestore con segundos
+    if (typeof timestamp.seconds === 'number') {
+      return new Date(timestamp.seconds * 1000).toLocaleDateString("es-ES");
+    }
+    
+    // Si ya es un Date nativo
+    if (timestamp instanceof Date) {
+      return timestamp.toLocaleDateString("es-ES");
+    }
+    
+    // Último intento
+    const date = new Date(timestamp);
+    if (!isNaN(date.getTime())) {
+      return date.toLocaleDateString("es-ES");
+    }
+  } catch (e) {
+    console.error("[formatDate] Error:", e);
+  }
+  
+  return "N/A";
+}
+
 function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): string {
   const esCliente = tipo === "cliente";
   const nombreDestinatario = esCliente
     ? orden.datosCliente?.nombre || "Cliente"
     : "Administrador";
 
-  // Construir filas de productos con imágenes
+  // Construir filas de productos con imágenes y calcular subtotal
+  let subtotalProductos = 0;
   const productosRows = (orden.productos || [])
     .map((p: any) => {
       const variacionesHTML = p.selectedVariationsConNombres
@@ -25,6 +66,10 @@ function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): st
           </div>`
         : "";
 
+      const precioUnitario = p.precioUnitario || 0;
+      const subtotalProducto = precioUnitario * p.cantidad;
+      subtotalProductos += subtotalProducto;
+
       return `
         <tr>
           <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">
@@ -39,12 +84,12 @@ function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): st
                   <div style="font-weight: 600; color: #584738; font-size: 14px;">${p.nombre}</div>
                   ${variacionesHTML}
                   <div style="margin-top: 4px; font-size: 13px; color: #B59E7D;">
-                    Cantidad: ${p.cantidad} - Precio unitario: $${(p.precioUnitario || 0).toFixed(2)}
+                    Cantidad: ${p.cantidad} - Precio unitario: $${precioUnitario.toFixed(2)}
                   </div>
                 </td>
                 <td style="text-align: right; vertical-align: top; padding-top: 12px;">
                   <div style="font-weight: 600; color: #584738; font-size: 14px;">
-                    $${((p.precioUnitario || 0) * p.cantidad).toFixed(2)}
+                    $${subtotalProducto.toFixed(2)}
                   </div>
                 </td>
               </tr>
@@ -130,7 +175,7 @@ function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): st
                   Estado: <strong>En revision</strong>
                 </p>
                 <p style="margin: 4px 0 0; font-size: 13px; color: #584738;">
-                  Fecha: ${orden.createdAt ? new Date(orden.createdAt).toLocaleDateString("es-ES") : "N/A"}
+                  Fecha: ${formatDate(orden.createdAt)}
                 </p>
               </div>
             </td>
@@ -211,7 +256,7 @@ function buildTransferenciaEmailHTML(orden: any, tipo: "cliente" | "dueño"): st
               <div style="background: #F1EADA; padding: 16px; border-radius: 8px; border: 1px solid #B59E7D;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #584738;">
                   <span>Subtotal productos</span>
-                  <span>$${((orden.total || 0) - (orden.datosEnvio?.costoEnvio || 0)).toFixed(2)}</span>
+                  <span>$${subtotalProductos.toFixed(2)}</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #584738;">
                   <span>Costo de envío</span>
@@ -264,6 +309,10 @@ export async function POST(req: NextRequest) {
   try {
     const { orden, tipo } = await req.json();
 
+    console.log("[send-transferencia-email] Orden recibida:", JSON.stringify(orden, null, 2));
+    console.log("[send-transferencia-email] createdAt:", orden.createdAt);
+    console.log("[send-transferencia-email] createdAt type:", typeof orden.createdAt);
+
     if (!orden) {
       return NextResponse.json(
         { error: "Orden es requerida" },
@@ -299,7 +348,7 @@ export async function POST(req: NextRequest) {
         "Precedence": "transactional",
         "X-Mailer": "Resend",
       },
-      reply_to: process.env.EMAIL_FROM_ADDRESS || "soporte@technothings.com",
+      replyTo: process.env.EMAIL_FROM_ADDRESS || "soporte@technothings.com",
     });
 
     console.log("[send-transferencia-email] Respuesta de Resend:", emailResponse);

@@ -1,15 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
+// Helper para convertir Timestamp de Firestore a Date
+function formatDate(timestamp: any): string {
+  if (!timestamp) return "N/A";
+  
+  // Si es un Timestamp de Firestore con método toDate
+  if (timestamp && typeof timestamp.toDate === 'function') {
+    return timestamp.toDate().toLocaleDateString("es-ES");
+  }
+  
+  // Si es un Timestamp de Firestore con segundos y nanosegundos
+  if (timestamp && typeof timestamp.seconds === 'number') {
+    return new Date(timestamp.seconds * 1000).toLocaleDateString("es-ES");
+  }
+  
+  // Si ya es un Date o string
+  try {
+    return new Date(timestamp).toLocaleDateString("es-ES");
+  } catch {
+    return "N/A";
+  }
+}
+
 function buildAprobacionEmailHTML(orden: any, tipo: "cliente" | "dueño"): string {
   const esCliente = tipo === "cliente";
   const nombreDestinatario = esCliente
     ? orden.datosCliente?.nombre || "Cliente"
     : "Administrador";
 
-  // Construir filas de productos con imágenes
+  // Calcular subtotal de productos
+  let subtotalProductos = 0;
   const productosRows = (orden.productos || [])
     .map((p: any) => {
+      const precioUnitario = p.precioUnitario || 0;
+      const subtotalProducto = precioUnitario * p.cantidad;
+      subtotalProductos += subtotalProducto;
       const variacionesHTML = p.selectedVariationsConNombres
         ? Object.entries(p.selectedVariationsConNombres)
             .map(
@@ -143,7 +169,7 @@ function buildAprobacionEmailHTML(orden: any, tipo: "cliente" | "dueño"): strin
               <div style="background: #F1EADA; padding: 16px; border-radius: 8px; border: 1px solid #B59E7D;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #584738;">
                   <span>Subtotal productos</span>
-                  <span>$${((orden.total || 0) - (orden.datosEnvio?.costoEnvio || 0)).toFixed(2)}</span>
+                  <span>$${subtotalProductos.toFixed(2)}</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #584738;">
                   <span>Costo de envio</span>
@@ -231,7 +257,7 @@ export async function POST(req: NextRequest) {
         "Precedence": "transactional",
         "X-Mailer": "Resend",
       },
-      reply_to: process.env.EMAIL_FROM_ADDRESS || "soporte@technothings.com",
+      replyTo: process.env.EMAIL_FROM_ADDRESS || "soporte@technothings.com",
     });
 
     console.log("[send-aprobacion-email] Respuesta de Resend:", emailResponse);
